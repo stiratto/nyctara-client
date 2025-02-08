@@ -9,13 +9,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import queryClient from "@/main";
-import { RootState } from "@/store/store";
 import { useMutation } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
-import { Product } from "@/interfaces/Product.Interface";
 
 export const DeleteProductDialog = ({ id }: { id: string }) => {
   const navigate = useNavigate();
@@ -36,8 +33,8 @@ export const DeleteProductDialog = ({ id }: { id: string }) => {
   });
   return (
     <Dialog>
-      <DialogTrigger>
-        <Button variant={"destructive"}>Eliminar producto</Button>
+      <DialogTrigger className="bg-red-600 text-white rounded text-sm font-semibold p-3 w-max hover:bg-red-800">
+        Eliminar producto
       </DialogTrigger>
       <DialogContent className="bg-[#ecefdc]">
         <DialogHeader>
@@ -51,7 +48,7 @@ export const DeleteProductDialog = ({ id }: { id: string }) => {
         <div className="flex items-center gap-4">
           <Button
             variant={"destructive"}
-            onClick={() => deleteProduct(id)}
+            onClick={() => deleteProduct(id as string)}
           >
             Si
           </Button>

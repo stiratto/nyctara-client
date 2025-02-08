@@ -23,7 +23,6 @@ export const ProductCard = ({
   const [formattedPrice, setFormattedPrice] = React.useState("");
 
   useEffect(() => {
-    console.log(product_price)
     const formattedPrice = product_price.toLocaleString("es-ES", {
       style: "currency",
       currency: "COP",
@@ -56,9 +55,9 @@ export const ProductCard = ({
     <Link to={`/producto/${id}`} className="flex flex-col !p-0 rounded">
       <Card className="bg-[#D3DAAE4b]">
         <CardHeader className="p-0">
-          <LazyLoadImage alt="Imagen del producto" height={300} effect="black-and-white" src={product_images?.[0] } width={300} className="mx-auto" />
-          <CardTitle className="px-6">{product_name}</CardTitle>
-          <CardDescription className="px-6">
+          <LazyLoadImage effect={"black-and-white"} width={300} height={300} alt="Imagen de un producto" src={product_images?.[0] as string} className="mx-auto " />
+          <CardTitle className="px-6 break-all">{product_name}</CardTitle>
+          <CardDescription className="px-6 ">
             {product_category?.category_name}
           </CardDescription>
         </CardHeader>

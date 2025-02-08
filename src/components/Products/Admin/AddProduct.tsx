@@ -13,7 +13,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { CloudUpload, X } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useMemo, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -47,7 +47,6 @@ const AddProduct = () => {
     },
 
   });
-
 
   const removeImage = (index: number) => {
     try {

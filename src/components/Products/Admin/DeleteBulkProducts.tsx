@@ -7,13 +7,14 @@ import { Product } from "@/interfaces/Product.Interface"
 import queryClient from "@/main";
 import { RootState } from "@/store/store";
 import { useMutation, useQuery } from "@tanstack/react-query"
+import { warn } from "console";
 import { ExternalLink, LoaderCircle, Search, Trash2 } from "lucide-react";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, memo, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { toast } from "sonner"
 
-export const DeleteBulkProducts = () => {
+const DeleteBulkProducts = () => {
   const [results, setResults] = useState<Product[]>()
   const [productsToDelete, setProductsToDelete] = useState<Set<string>>(new Set())
   const containerRef = useRef(null);
@@ -24,9 +25,10 @@ export const DeleteBulkProducts = () => {
       const response = await productsApi.GetAllProducts()
       setResults(response)
       return response
-    }
-  })
+    },
 
+
+  })
   const search = (e: ChangeEvent<HTMLInputElement>) => {
     const searchResults: any = products?.filter((p) => p.product_name.includes(e.target.value))
     setResults(searchResults)
@@ -82,7 +84,7 @@ export const DeleteBulkProducts = () => {
     },
     onSuccess: () => {
       toast.success("Los productos fueron eliminados");
-      queryClient.invalidateQueries({ queryKey: ['all-products'] });
+      queryClient.refetchQueries({ queryKey: ['all-products'] });
       queryClient.invalidateQueries({ queryKey: ['category-products'] });
       setProductsToDelete([] as unknown as Set<any>)
     },
@@ -94,7 +96,6 @@ export const DeleteBulkProducts = () => {
     }
 
   })
-
   const onSubmit = () => {
     const productsToDeleteArray = Array.from(productsToDelete as Set<string>)
     mutate(productsToDeleteArray)
@@ -164,3 +165,5 @@ export const DeleteBulkProducts = () => {
     </div>
   )
 }
+
+export default DeleteBulkProducts

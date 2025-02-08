@@ -76,9 +76,6 @@ const Product = () => {
     addToCart(product);
   };
 
-  useEffect(() => {
-    console.log(product)
-  }, [])
 
 
 
@@ -93,7 +90,7 @@ const Product = () => {
       {!productLoading && productError && <ProductsNotFound cart />}
 
       {!productLoading && !productError && product && (
-        <div className="flex flex-col xl:flex-row justify-center xl:gap-48 items-center w-full mt-14   xl:mt-0 ">
+        <div className="flex flex-col xl:flex-row justify-center xl:gap-48 items-center w-full mt-14 xl:mt-0 ">
           <div className="flex flex-col gap-4">
             <ProductBreadcrumb
               name={product?.product_name}
@@ -123,7 +120,7 @@ const Product = () => {
             </div>
           </div>
           <div className="flex flex-col gap-4 mt-8 ">
-            <TypographyH1>{product?.product_name}</TypographyH1>
+            <h1 className="font-extrabold text-5xl break-all max-w-sm">{product?.product_name}</h1>
             <TypographyP className="font-bold text-xl">
               ${formattedPrice}
             </TypographyP>
@@ -140,18 +137,18 @@ const Product = () => {
             </div>
             <div>
               <TypographyH4>Detalles</TypographyH4>
-              <p className="flex items-center gap-2 font-bold">
-                Calidad:{" "}
+              <div className="flex items-center gap-2 ">
+                <span className="font-bold">Calidad:</span>
                 <TypographyP className="font-normal">
                   {product?.product_quality}
                 </TypographyP>
-              </p>
-              <p className="flex items-center gap-2 font-bold">
-                Categoria:{" "}
+              </div>
+              <div className="flex items-center gap-2 ">
+                <span className="font-bold">Categoria:{" "}</span>
                 <TypographyP className="font-normal">
                   {product?.product_category?.category_name}
                 </TypographyP>
-              </p>
+              </div>
             </div>
 
             <div>
@@ -170,18 +167,16 @@ const Product = () => {
               </ul>
             </div>
 
-            <div className="text-2xl flex flex-col md:flex-row items-center gap-4">
-              <div>
-                <Button
-                  className="flex  gap-2 items-center"
-                  variant={"outline"}
-                  type="button"
-                  onClick={() => handleAddToCart(product as ProductProps)}
-                >
-                  Añadir al carrito
-                  <ShoppingCart />
-                </Button>
-              </div>
+            <div className="">
+              <Button
+                className="flex  gap-2 items-center"
+                variant={"outline"}
+                type="button"
+                onClick={() => handleAddToCart(product as ProductProps)}
+              >
+                Añadir al carrito
+                <ShoppingCart size={20} />
+              </Button>
             </div>
 
 

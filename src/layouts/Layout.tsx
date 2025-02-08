@@ -5,6 +5,8 @@ import { ScrollRestoration } from "react-router-dom";
 import { FloatingNav } from "../components/Navbar/FloatingNav.tsx";
 import { FloatingWhatsapp } from "../components/Other/FloatingWhatsapp.tsx";
 import Footer from "../pages/Footer.tsx";
+import { Suspense } from "react";
+import LoadingPage from "@/components/Other/LoadingPage.tsx";
 
 const Layout = () => {
   return (
@@ -15,7 +17,11 @@ const Layout = () => {
         style: { background: '#ecefdc', border: 'none', color: 'black' }
       }} />
 
-      <Outlet />
+      <Suspense fallback={<LoadingPage />}>
+
+
+        <Outlet />
+      </Suspense>
       <ScrollRestoration />
       <ReactQueryDevtools initialIsOpen={false} />
       <Footer />

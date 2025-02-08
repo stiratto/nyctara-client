@@ -2,7 +2,6 @@ import productsApi from "@/api/products/products.api";
 import { Product } from "@/interfaces/Product.Interface.ts";
 import { useQuery } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
-import queryClient from "../../main.tsx";
 import ProductsNotFound from "../NotFound/ProductsNotFound.tsx";
 import { TypographyH1 } from "../Typography/h1.tsx";
 import { ProductCard } from "./ProductCard.tsx";
