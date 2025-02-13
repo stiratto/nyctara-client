@@ -36,7 +36,7 @@ export function DatePickerForm() {
 
 
   const { mutate: createDiscount } = useMutation({
-    mutationKey: ["create-discount"],
+    mutationKey: ["create-discount", form.getValues("discount_name")],
     mutationFn: (data) => discountsApi.CreateDiscount(data),
     onMutate: async (data) => {
       // optimistic performance
@@ -54,11 +54,10 @@ export function DatePickerForm() {
       // be accesible
       return { previousDiscounts }
     },
-    onError: async ({ err, context }: any) => {
-
-      queryClient.setQueryData(["discounts"], context.previousDiscounts);
-      toast.error(`Hubo un error al crear el descuento ${err}`);
-      throw new Error(`Hubo un error al crear el descuento: ${err}`);
+    onError: (error, _, context) => {
+      toast.error(`Hubo un error al crear el descuento: ${error.message}`);
+      queryClient.setQueryData(["discounts"], context?.previousDiscounts);
+      throw new Error(`Hubo un error al crear el descuento: ${error}`);
     }
   });
 
@@ -89,12 +88,15 @@ export function DatePickerForm() {
         )} />
 
         <FormField control={form.control} name="discount_total" render={({ field }) => (
-          <FormItem>
+          <FormItem className="relative">
             <FormLabel>
-              Total del descuento
+              Total del descuento (%)
             </FormLabel>
             <FormControl>
-              <Input type="number" {...field} />
+              <div>
+                <Input type="number" {...field} className="w-min px-6" />
+                <span className="text-gray-600 absolute top-10 left-2">%</span>
+              </div>
             </FormControl>
             <FormMessage />
           </FormItem>

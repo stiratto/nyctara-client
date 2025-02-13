@@ -10,6 +10,13 @@ export const SearchBar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
+
+  const handleClickOutside = (e: MouseEvent) => {
+    if (divRef.current && !divRef.current.contains(e.target)) {
+      setShow(false)
+    }
+  }
+
   const handleSearch = () => {
     setShow(true);
     inputRef?.current?.focus();
@@ -20,7 +27,7 @@ export const SearchBar = () => {
       return setShow(true);
     }
     if (searchValue.length > 1) {
-      navigate(`/busqueda/?query=${query}`);
+      navigate(`/busqueda?query=${query}`);
       setShow(false);
     }
   };

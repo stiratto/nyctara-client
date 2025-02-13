@@ -4,6 +4,7 @@ import { lazy } from "react";
 import Layout from "../layouts/Layout.tsx"
 
 const Login = lazy(() => import('../pages/Login.tsx'))
+const PageNotFound = lazy(() => import('../components/NotFound/PageNotFound.tsx'))
 const InfoPage = lazy(() => import('../pages/InfoPage.tsx'))
 const AddUpdateCategory = lazy(() => import('@/components/Categories/AddUpdateCategory.tsx'))
 const Product = lazy(() => import('../components/Products/Product.tsx'))
@@ -67,7 +68,7 @@ const router = createBrowserRouter([
           { path: "/admin/editar-producto/:id", element: <EditProduct /> },
         ],
       },
-      { path: "*", element: <h1>Page not found</h1> },
+      { path: "*", element: <PageNotFound /> },
     ],
   },
 ]);

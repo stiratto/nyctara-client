@@ -110,7 +110,7 @@
   position: relative;
   content: "";
   width: 40px;
-  top: 0px;
+  top: 4px;
   right: 0px;
   height: 40px;
   background-color: transparent;
@@ -133,7 +133,7 @@
 .hamburguer::after {
   z-index: 1000;
   position: absolute;
-  top: 10px;
+  top: 8px;
   right: 0px;
   content: "";
   width: 20px;

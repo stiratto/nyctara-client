@@ -102,7 +102,7 @@ const DeleteBulkProducts = () => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full max-w-xl mx-auto">
 
       <TypographyH1>Eliminar productos</TypographyH1>
       <div className="bg-[#ecefdc] relative">
@@ -114,7 +114,7 @@ const DeleteBulkProducts = () => {
       {isLoading && !isError && <LoaderCircle size={30} className="animate-spin mx-auto" />}
       {!isLoading && isError && <p className="text-red-500">Hubo un error.</p>}
       {!isLoading && !isError && (
-        <Table className="block !h-[24rem] overflow-y-scroll border border-gray-500 rounded-sm " >
+        <Table className="block !h-[24rem] overflow-y-scroll border border-gray-500 rounded-sm !w-full !max-w-xl" >
           <TableHeader className="sticky top-0 shadow-[0_5px_30px_-15px_rgba(0,0,0,0.3)] bg-[#ecefdc] w-full">
             <TableHead>Nombre</TableHead>
             <TableHead>Precio</TableHead>
@@ -123,28 +123,34 @@ const DeleteBulkProducts = () => {
 
           </TableHeader>
           <TableBody className="" ref={containerRef}>
-            {results?.map((p) => (<TableRow className="" key={p.id}>
-              <TableCell className="flex items-center gap-2">
-                <Input
-                  type="checkbox"
-                  className="w-min productCheckbox"
-                  onChange={() => onCheckBox(p.id as string)}
-                />
-                <NavLink
-                  target="_blank"
-                  to={`/producto/${p.id}`}
-                  className="underline text-blue-500 flex items-center gap-1"
-                >
-                  {p.product_name}
-                  <ExternalLink size={20} />
-                </NavLink>
+            {results && results.length > 0 ? results?.map((p) => (
+              <TableRow className="w-full" key={p.id}>
+
+                <TableCell className="flex items-center gap-2 w-full">
+                  <Input
+                    type="checkbox"
+                    className="w-min productCheckbox"
+                    onChange={() => onCheckBox(p.id as string)}
+                  />
+                  <NavLink
+                    target="_blank"
+                    to={`/producto/${p.id}`}
+                    className="underline text-blue-500 flex items-center gap-1"
+                  >
+                    {p.product_name}
+                    <ExternalLink size={20} />
+                  </NavLink>
+                </TableCell>
+                <TableCell className="w-min">{p.product_price}</TableCell>
+                <TableCell>{p?.product_category?.category_name}</TableCell>
+              </TableRow>
+
+
+            )) : <TableRow>
+              <TableCell className="w-full">
+                <h1 className="text-gray-600 py-2">No se pudieron encontrar productos por ese nombre</h1>
               </TableCell>
-              <TableCell>{p.product_price}</TableCell>
-              <TableCell>{p?.product_category?.category_name}</TableCell>
-            </TableRow>
-
-
-            ))}
+            </TableRow>}
           </TableBody>
         </Table>
 

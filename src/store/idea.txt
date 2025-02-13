@@ -1,0 +1,7 @@
+antes de aplicar un descuento, debemos revisar lo siguiente:
+
+si el descuento existe en la database - done
+si el usuario esta usando un descuento
+	si el usuario esta usando un descuento, decirle que no puede aplicar ese descuento
+
+si el usuario ya uso ese descuento

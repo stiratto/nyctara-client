@@ -1,7 +1,8 @@
-import { PRODUCT_PRICE_APPLICABLE_DISCOUNT } from "@/lib/consts/general"
+import { Product } from "@/interfaces/Product.Interface";
+import { Dispatch, MiddlewareAPI } from "@reduxjs/toolkit";
 
-export function checkDiscountUsing({ getState }) {
-  return (next) => (action) => {
+export function changePriceIfUserUsingDiscount({ getState }: MiddlewareAPI) {
+  return (next: Dispatch<any>) => (action: any) => {
     if (action.type === "cart/addProductToCart") {
       let currentDiscountUsing = getState().discounts.current_discount_being_used
 
@@ -10,14 +11,9 @@ export function checkDiscountUsing({ getState }) {
       }
 
       const payload = { ...action.payload }; // Crea una copia superficial del payload
-      const product = { ...payload.product }; // Crea una copia del producto
+      const product: Product = { ...payload.product }; // Crea una copia del producto
 
-      if (product.price >= PRODUCT_PRICE_APPLICABLE_DISCOUNT) {
-        product.price -= currentDiscountUsing.discount_total
-      }
-
-
-
+      product.product_price -= Math.floor((product.product_price * currentDiscountUsing.discount_total) / 100)
       payload.product = product; // Asigna la copia modificada del producto
 
       return next({ ...action, payload }); // Pasa el nuevo action con la copia modificada

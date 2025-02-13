@@ -1,17 +1,19 @@
 import { Product } from "@/interfaces/Product.Interface.ts";
 import apiClient from "../index.ts";
 import { store } from "@/store/store.ts";
+import { getAxiosErrorResponse } from "@/utils/utils.ts";
 
-// GETS
 
 const token = store.getState().user.token;
 
+// GET REQUESTS
 async function GetAllProducts() {
   try {
     const response = await apiClient.get(`/products`);
     return response.data;
   } catch (error: any) {
-    throw new Error(`Error al obtener el producto: ${error}`);
+    const errorMessage = getAxiosErrorResponse(error)
+    throw new Error(errorMessage);
   }
 }
 
@@ -19,30 +21,29 @@ async function GetProductImage(id: string) {
   try {
     const response = await apiClient.get(`/products/cart/${id}`);
     return response.data;
-  } catch (err: any) {
-    throw new Error(`Error al obtener la imagen del producto: ${err}`);
-  }
-}
-
-async function CreateProduct(body: any, token: string) {
-  try {
-    const response = await apiClient.post("/products/create-product", body, {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
-    return response.data;
   } catch (error: any) {
-    throw new Error(`Error al crear el producto: ${error}`);
+    const errorMessage = getAxiosErrorResponse(error)
+    throw new Error(errorMessage);
   }
 }
 
 async function GetProductById(id: string): Promise<Product> {
   try {
-    const response = await apiClient.get(`/products/findProductById/${id}`);
+    const response = await apiClient.get(`/products/${id}`);
     return response.data;
   } catch (error: any) {
-    throw new Error(`Error al obtener el producto: ${error}`);
+    const errorMessage = getAxiosErrorResponse(error)
+    throw new Error(errorMessage);
+  }
+}
+
+async function SearchProducts(word: string) {
+  try {
+    const response = await apiClient.get(`/products/search/${word}`);
+    return response.data;
+  } catch (error: any) {
+    const errorMessage = getAxiosErrorResponse(error)
+    throw new Error(errorMessage);
   }
 }
 
@@ -59,7 +60,8 @@ async function GetProductsByLimit(limit: number, id: string) {
     }
     return response.data;
   } catch (error: any) {
-    throw new Error(`Error al obtener los productos por limite: ${error}`);
+    const errorMessage = getAxiosErrorResponse(error)
+    throw new Error(errorMessage);
   }
 }
 
@@ -69,21 +71,30 @@ async function GetProductsByLimitAndCategory(limit: number, category: string) {
       `/products/homepage/${category}/${limit}`,
     );
     return response.data;
-  } catch (err: any) {
-    throw new Error(err);
+  } catch (error: any) {
+    const errorMessage = getAxiosErrorResponse(error)
+    throw new Error(errorMessage);
   }
 }
 
-async function SearchProducts(word: string) {
-  try {
-    const response = await apiClient.get(`/products/search/${word}`);
-    return response.data;
-  } catch (error: any) {
-    throw new Error(`Error al buscar productos: ${error}`);
-  }
-}
 
 // POSTS
+
+async function CreateProduct(body: any) {
+  try {
+    const response = await apiClient.post("/products/create-product", body, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    const errorMessage = getAxiosErrorResponse(error)
+    throw new Error(errorMessage);
+  }
+}
+
+
 
 // PATCH
 async function EditProduct(id: string, body: FormData) {
@@ -95,7 +106,8 @@ async function EditProduct(id: string, body: FormData) {
     });
     return response.data;
   } catch (error: any) {
-    throw new Error(`Error al editar el producto: ${error}`);
+    const errorMessage = getAxiosErrorResponse(error)
+    throw new Error(errorMessage);
   }
 }
 
@@ -108,12 +120,13 @@ async function DeleteProduct(id: string) {
       },
     });
     return response.data;
-  } catch (err: any) {
-    throw new Error(`Error al eliminar el producto: ${err}`);
+  } catch (error: any) {
+    const errorMessage = getAxiosErrorResponse(error)
+    throw new Error(errorMessage);
   }
 }
 
-async function DeleteProductImage(id: string, image: string, token: string) {
+async function DeleteProductImage(id: string, image: string) {
   try {
     const response = await apiClient.delete(`/products/image/${id}/${image}`, {
       headers: {
@@ -121,12 +134,13 @@ async function DeleteProductImage(id: string, image: string, token: string) {
       },
     });
     return response.data;
-  } catch (err: any) {
-    console.log(`Error al eliminar la imagen: ${err}`);
+  } catch (error: any) {
+    const errorMessage = getAxiosErrorResponse(error)
+    throw new Error(errorMessage);
   }
 }
 
-async function DeleteBulkProducts(products: string[], token: string) {
+async function DeleteBulkProducts(products: string[]) {
   try {
     const response = await apiClient.delete(`/products/deleteBulkProducts`, {
       headers: {
@@ -137,8 +151,9 @@ async function DeleteBulkProducts(products: string[], token: string) {
       }
     });
     return response.data;
-  } catch (err: any) {
-    throw new Error(`Error al eliminar el producto: ${err}`);
+  } catch (error: any) {
+    const errorMessage = getAxiosErrorResponse(error)
+    throw new Error(errorMessage);
   }
 }
 

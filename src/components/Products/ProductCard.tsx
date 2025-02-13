@@ -8,6 +8,9 @@ import { Button } from "../ui/button";
 
 import { ShoppingCart } from "lucide-react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { Discount } from "@/interfaces/Discount.interface";
 
 export const ProductCard = ({
   product_name,
@@ -22,6 +25,8 @@ export const ProductCard = ({
 }: Product) => {
   const [formattedPrice, setFormattedPrice] = React.useState("");
 
+  const discountUserUsing = useSelector((state: RootState) => state.discounts.current_discount_being_used) as Discount
+
   useEffect(() => {
     const formattedPrice = product_price.toLocaleString("es-ES", {
       style: "currency",
@@ -31,65 +36,20 @@ export const ProductCard = ({
     setFormattedPrice(result);
   }, [product_price]);
 
-  const handleAddToCart = (e: any) => {
-    e.preventDefault();
-    try {
-      addToCart(
-        {
-          product_name,
-          product_price,
-          id,
-          product_images,
-          product_tags,
-          product_notes,
-          product_description,
-          product_quality,
-          product_category,
-        },
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
   return (
     <Link to={`/producto/${id}`} className="flex flex-col !p-0 rounded">
-      <Card className="bg-[#D3DAAE4b]">
-        <CardHeader className="p-0">
-          <LazyLoadImage effect={"black-and-white"} width={300} height={300} alt="Imagen de un producto" src={product_images?.[0] as string} className="mx-auto " />
-          <CardTitle className="px-6 break-all">{product_name}</CardTitle>
-          <CardDescription className="px-6 ">
-            {product_category?.category_name}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-x-2">
-            {product_notes
-              && product_notes.map((note: string, index: number) => (
-                <Badge key={index} className="bg-gray-200 text-black hover:!bg-gray-200">
-                  {note}
-                </Badge>
-              ))}
-          </div>
-          <div className="space-x-2">
-            {product_tags
-              && product_tags.map((tag: string, index: number) => (
-                <Badge key={index} className="bg-gray-200 text-black hover:!bg-gray-200">
-                  {tag}
-                </Badge>
-              ))}
-          </div>
-        </CardContent>
-        <CardFooter className="justify-between space-y-2 flex-wrap">
-          <p className="font-extrabold">${formattedPrice}</p>
-          <Button
-            className="flex items-center gap-2 !bg-"
-            onClick={handleAddToCart}
-          >
-            <ShoppingCart />
-            Anadir al carrito
-          </Button>
-        </CardFooter>
-      </Card>
+      <div className="group relative flex flex-col">
+        <LazyLoadImage src={product_images?.[0] as string} effect={"black-and-white"} className="w-64 h-80 object-fill rounded-lg" />
+        <button className="opacity-0 group-hover:opacity-100 hover:bg-black/30 transition-all text-white bg-black/50 rounded-lg p-2 absolute top-[17rem] w-[15rem] ml-2 font-semibold">Ver producto</button>
+        <span className="font-bold">{product_category?.category_name}</span>
+        <h1 className="group-hover:underline">{product_name}</h1>
+        <div className="space-x-4">
+          {product_notes.map((n) => (
+            <Badge className="bg-[#D3DAAE] text-black">{n}</Badge>
+          ))}
+        </div>
+        <p className="font-bold">${formattedPrice}</p>
+      </div>
     </Link>
   );
 };

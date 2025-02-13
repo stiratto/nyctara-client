@@ -12,6 +12,7 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnWindowFocus: false,
       staleTime: Infinity,
+      retry: 1,
     },
   },
 });
@@ -23,7 +24,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <RouterProvider router={router} />
       </QueryClientProvider>
     </PersistGate>
-  </Provider >,
+  </Provider>,
 );
 
 export default queryClient;

@@ -1,33 +1,24 @@
 import CartProduct from "@/components/Cart/CartProduct";
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Product } from "@/interfaces/Product.Interface";
-import { RootState } from "@/store/store";
+import { AppDispatch, RootState } from "@/store/store";
 import { ShoppingCart } from "lucide-react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ApplyDiscount from "./ApplyDiscount";
 import { CartBuyForm } from "./CartBuyForm";
 import ProductsNotFound from "../NotFound/ProductsNotFound";
+import { useEffect, useState } from "react";
+import { getCartTotal } from "@/utils/cartUtils";
+
 
 const Cart = () => {
   const cartProducts = useSelector((state: RootState) => state.cart.products);
+  const [total, setTotal] = useState<number>(0)
 
-  window.addEventListener("storage", (e) => {
-    if (e.key === "discounts_user_already_used" && e.newValue === null) {
-      localStorage.setItem(
-        "discounts_user_already_used",
-        e.oldValue as unknown as string,
-      );
-    }
-  });
 
-  const getCartTotal = () => {
-    return cartProducts.reduce((total, product) => {
-      return (
-        total
-        + (product?.quantity as number) * product.price
-      );
-    }, 0);
-  };
+  useEffect(() => {
+    setTotal(getCartTotal())
+  }, [cartProducts])
 
   return (
     <Sheet>
@@ -48,10 +39,10 @@ const Cart = () => {
             </ul>
           )
           : (
-            <ProductsNotFound cart={true} />
+            <ProductsNotFound />
           )}
         <div className="flex flex-col">
-          <p className="text-2xl">Total: ${getCartTotal()}</p>
+          <p className="text-2xl">Total: ${total}</p>
           <span className="uppercase text-gray-800 text-xs">
             Más gastos de envio
           </span>

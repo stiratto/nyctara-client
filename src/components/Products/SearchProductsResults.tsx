@@ -48,14 +48,7 @@ const SearchProductsResults = () => {
           && products?.map((product: Product) => {
             return (
               <ProductCard
-                name={product.name}
-                price={product.price}
-                category={product.category}
-                tags={product.tags}
-                notes={product.notes}
-                imageUrl={product.imageUrl}
-                product_quality={product.product_quality}
-                id={product.id}
+                {...product}
               />
             );
           })}

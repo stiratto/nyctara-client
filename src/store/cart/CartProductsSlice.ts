@@ -15,17 +15,21 @@ const cartProductsSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addProductToCart: (state, action: PayloadAction<{product: Product}>) => {
+    addProductToCart: (state, action: PayloadAction<{ product: Product, discountUserUsing: Discount }>) => {
       const productExists = state.products.find(
         (p) => p.id === action.payload.product.id,
       );
+      const product = action.payload.product
+
+      // check if user is using a discount and apply it before adding
+      // hte product to cart
 
       if (productExists) {
-        productExists.quantity += 1 as any;
-      } else {
-        action.payload.product.quantity = 1
-        state.products.push(action.payload.product);
+        productExists.product_quantity += 1 as any;
+        return
       }
+      product.product_quantity = 1
+      state.products.push(product);
     },
     removeProductFromCart: (state, action: PayloadAction<{ id: string }>) => {
       state.products = state.products.filter(
@@ -43,14 +47,19 @@ const cartProductsSlice = createSlice({
         (product) => product.id === action.payload.id,
       );
       if (product) {
-        product.quantity += action.payload.quantity as any;
+        product.product_quantity += action.payload.quantity as any;
       }
     },
+    /*
+     * @param: discount_total: total amount to discount from products
+     * @return: nothing 
+     *
+     *
+     * */
     changeProductPrice: (
       state,
       action: PayloadAction<{
         discount_total: string;
-        discount_name: string;
         userIsUsingDiscount: Discount;
       }>,
     ) => {
@@ -58,7 +67,7 @@ const cartProductsSlice = createSlice({
         return;
       } else {
         state.products.map((product) => {
-          product.price = product.price - parseInt(action.payload.discount_total);
+          product.product_price %= parseInt(action.payload.discount_total);
         });
       }
     },
@@ -70,7 +79,7 @@ const cartProductsSlice = createSlice({
         (product) => product.id === action.payload.id,
       );
       if (product) {
-        product.quantity -= action.payload.quantity as any;
+        product.product_quantity -= action?.payload?.quantity as any;
       }
     },
   },

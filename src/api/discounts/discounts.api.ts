@@ -1,15 +1,19 @@
 import { Discount } from "@/interfaces/Discount.interface.ts";
 import { store } from "@/store/store.ts";
 import apiClient from "../index.ts";
+import axios, { AxiosError, AxiosPromise } from "axios";
+import { getAxiosErrorResponse } from "@/utils/utils.ts";
 
 const token = store.getState().user.token;
+
 
 async function GetDiscountByName(name: string): Promise<Discount> {
   try {
     const response = await apiClient.get(`/discounts/discount-name/${name}`);
     return response.data;
   } catch (error) {
-    throw new Error(`Error al obtener el descuento: ${error}`);
+    const errorMessage = getAxiosErrorResponse(error)
+    throw new Error(errorMessage);
   }
 }
 
@@ -18,16 +22,8 @@ async function GetDiscounts() {
     const response = await apiClient.get(`/discounts/all/`);
     return response.data;
   } catch (error) {
-    throw new Error(`Error al obtener los descuentos: ${error}`);
-  }
-}
-
-async function GetAllDiscounts() {
-  try {
-    const response = await apiClient.get(`/discounts/all`);
-    return response.data;
-  } catch (error) {
-    throw new Error(`Error al obtener los descuentos: ${error}`);
+    const errorMessage = getAxiosErrorResponse(error)
+    throw new Error(errorMessage);
   }
 }
 
@@ -37,8 +33,10 @@ async function CreateDiscount(body: any) {
       headers: { Authorization: "Bearer " + token },
     });
     return response.data;
-  } catch (error) {
-    throw new Error(`Error al crear el descuento: ${error}`);
+  } catch (error: any) {
+    const errorMessage = getAxiosErrorResponse(error)
+    throw new Error(errorMessage);
+
   }
 }
 
@@ -49,7 +47,8 @@ async function DeleteDiscount(id: string) {
     });
     return response.data;
   } catch (error) {
-    throw new Error(`Error al eliminar el descuento: ${error}`);
+    const errorMessage = getAxiosErrorResponse(error)
+    throw new Error(errorMessage);
   }
 }
 
@@ -57,6 +56,5 @@ export default {
   GetDiscountByName,
   CreateDiscount,
   DeleteDiscount,
-  GetAllDiscounts,
   GetDiscounts,
 };

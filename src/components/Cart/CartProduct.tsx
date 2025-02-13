@@ -9,7 +9,7 @@ import { TypographyP } from "../Typography/p";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 
-const CartProduct = ({ name, price, id, quantity, description, notes, product_quality }: any) => {
+const CartProduct = ({ product_name, product_price, id, product_quantity, product_description, product_notes, product_quality }: any) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const { data: url } = useQuery({
@@ -41,7 +41,7 @@ const CartProduct = ({ name, price, id, quantity, description, notes, product_qu
           loading="lazy"
           decoding="async"
           src={url?.[0]}
-          alt={name}
+          alt={product_name}
           width={128}
           height={128} // Indica el tamaño máximo que debe mostrarse
           className="rounded-xl object-contain"
@@ -51,12 +51,12 @@ const CartProduct = ({ name, price, id, quantity, description, notes, product_qu
       <div className="flex flex-col md:flex-row justify-between items-center w-full text-sm">
         <div className="flex flex-col gap-4">
           <div>
-            <h1 className="font-bold text-2xl">{name}</h1>
-            <TypographyP className="max-w-xs text-ellipsis overflow-hidden">{description}</TypographyP>
+            <h1 className="font-bold text-2xl">{product_name}</h1>
+            <TypographyP className="max-w-xs text-ellipsis overflow-hidden">{product_description}</TypographyP>
           </div>
           <div className="flex gap-2">
             <p className="font-semibold">Notas:</p>
-            {notes.map((note: string, index: number) => <Badge key={index} className="w-min">{note}</Badge>)}
+            {product_notes.map((note: string, index: number) => <Badge key={index} className="w-min">{note}</Badge>)}
           </div>
           <h1 className="font-semibold">
             Calidad: <span className="font-normal">{product_quality}</span>
@@ -65,7 +65,8 @@ const CartProduct = ({ name, price, id, quantity, description, notes, product_qu
 
         <div className="flex flex-col text-end gap-4">
           <div>
-            <h1 className="font-bold text-lg">${price}</h1>
+            <h1 className="font-bold text-lg">${product_price}</h1>
+
             {current_discount_being_used && (
               <p className="line-through text-gray-500">${current_discount_being_used.discount_total}</p>
             )}
@@ -73,13 +74,13 @@ const CartProduct = ({ name, price, id, quantity, description, notes, product_qu
           <div className="flex flex-col gap-2">
             <div className="flex flex-wrap gap-4 items-center">
               <Button
-                disabled={quantity === 1}
+                disabled={product_quantity === 1}
                 onClick={() => removeProductQuantity(id)}
                 className="!px-3 bg-transparent border border-gray-600 text-black font-bold hover:bg-black/10"
               >
                 <Minus size={13} />
               </Button>
-              <h1 className="text-lg">{quantity}</h1>
+              <h1 className="text-lg">{product_quantity}</h1>
               <Button
                 className="!px-3 bg-transparent border border-gray-600 text-black font-bold hover:bg-black/10"
                 onClick={() => addProductQuantity(id)}

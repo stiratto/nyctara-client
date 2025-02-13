@@ -4,8 +4,9 @@ import { NavLink as Link } from "react-router-dom";
 import categoriesApi from "@/api/categories/categories.api";
 import { CategoryInterface } from "@/interfaces/Category.Interface";
 import { useQuery } from "@tanstack/react-query";
-import { LoaderCircle, MoveRight, Search } from "lucide-react";
+import { ExternalLink, LoaderCircle, MoveRight, Search } from "lucide-react";
 import { ChangeEvent, useEffect, useState } from "react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 
 export const UpdateCategoriesSelect = () => {
 
@@ -37,6 +38,7 @@ export const UpdateCategoriesSelect = () => {
 
   }
 
+
   useEffect(() => {
     if (!query) {
       setFilteredResults(categories);
@@ -49,7 +51,8 @@ export const UpdateCategoriesSelect = () => {
 
 
   return (
-    <section>
+    <section className="w-full">
+
       {isLoading && <LoaderCircle className="animate-spin my-8" />}
       {
         !isLoading && isError && (
@@ -61,31 +64,51 @@ export const UpdateCategoriesSelect = () => {
 
       {
         !isLoading && !isError && filteredResults && (
-          <section className="space-y-8">
+          <section className="space-y-8 max-w-lg mx-auto">
             <h1 className="text-6xl">Actualizar categoria</h1>
             <div className="relative flex items-center">
-              <Input onChange={handleValue} placeholder="Busca por el nombre del producto" className="searchInput pl-8 !border-gray-500 w-min" />
+              <Input onChange={handleValue} placeholder="Busca por el nombre de la categoria" className="searchInput pl-8 !border-gray-500 w-min" />
               <Search size={17} className="absolute top-[10px] left-2" />
             </div>
             <div className="flex flex-col gap-4 h-[30rem] max-h-[30rem] overflow-y-auto  border border-gray-500">
-              {filteredResults?.map((category: CategoryInterface) => (
-                <Link
-                  to={`/admin/editar-categoria/${category.id}`}
-                  key={category.id}
-                  className="border-gray-500 border-b p-4 flex gap-2 items-center"
-                >
-                  <LazyLoadImage
-                    src={category.image as string}
-                    alt="Foto de la categoria"
-                    effect="black-and-white"
-                    className="w-16 h-16 rounded-xl"
-                  />
-                  <h3 className="text-2xl font-bold">{category.category_name}</h3>
-                  <button className="rounded-full p-1">
-                    <MoveRight size={20} />
-                  </button>
-                </Link>
-              ))}
+              <Table className="w-full">
+                <TableHeader >
+                  <TableRow>
+                    <TableHead >Categoria</TableHead>
+                    <TableHead >Fecha de creacion</TableHead>
+                    <TableHead>Ultima vez actualizada</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredResults.map((category) => (
+                    <TableRow className="w-full ">
+                      <TableCell className="w-full flex items-center gap-2">
+                        <Link
+                          key={category.id}
+                          to={`/admin/editar-categoria/${category.id}`}
+                          className="border-gray-500 w-full border-b p-4 flex gap-2 items-center text-blue-500 underline">
+
+                          {category.category_name}
+                          <ExternalLink size={20} />
+                        </Link>
+                      </TableCell>
+
+                      <TableCell>
+                        <p>
+                          {new Date(category?.createdAt as string).toLocaleDateString()}
+                        </p>
+                      </TableCell>
+
+                      <TableCell>
+                        <p>
+                          {new Date(category?.updatedAt as string).toLocaleDateString()}
+                        </p>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+
+                </TableBody>
+              </Table>
             </div>
           </section>
         )

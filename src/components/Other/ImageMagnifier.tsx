@@ -1,88 +1,45 @@
-import { useState } from "react";
+import clsx from "clsx";
+import { useEffect, useState } from "react";
 
-export function ImageMagnifier({
-  src,
-  width,
-  height,
-  magnifierHeight = 300,
-  magnifieWidth = 300,
-  zoomLevel = 2.0,
-}: {
-  src: string;
-  width?: string;
-  height?: string;
-  magnifierHeight?: number;
-  magnifieWidth?: number;
-  zoomLevel?: number;
-}) {
-  const [[x, y], setXY] = useState([0, 0]);
-  const [[imgWidth, imgHeight], setSize] = useState([0, 0]);
-  const [showMagnifier, setShowMagnifier] = useState(false);
+export function ImageMagnifier(img) {
+  // magnifier idea
+  // podemos poner la posicion del img zoomeada en el medio delcursor
+  const [[x, y], setSize] = useState([0, 0])
+  const [isMagnifying, setIsMagnifying] = useState(false)
+
+  const getCursorPosition = (e: any) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const offsetY = e.clientY - rect.top;
+    const percentX = (offsetX / rect.width) * 100
+    const percentY = (offsetY / rect.height) * 100
+    setSize([percentX, percentY])
+  }
+
   return (
-    <div
-      style={{
-        position: "relative",
-        height: height,
-        width: width,
-      }}
-    >
-      <img
-        src={src}
-        style={{ height: height, width: width }}
-        onMouseEnter={(e) => {
-          // update image size and turn-on magnifier
-          const elem = e.currentTarget;
-          const { width, height } = elem.getBoundingClientRect();
-          setSize([width, height]);
-          setShowMagnifier(true);
-        }}
-        onMouseMove={(e) => {
-          // update cursor position
-          const elem = e.currentTarget;
-          const { top, left } = elem.getBoundingClientRect();
 
-          // calculate cursor position on the image
-          const x = e.pageX - left - window.pageXOffset;
-          const y = e.pageY - top - window.pageYOffset;
-          setXY([x, y]);
+    <div className="relative">
+      <img src={img.src} className="h-96 w-[500px] h-[500px]" alt={"imagen del producto"}
+        onMouseMove={(e) => {
+          setIsMagnifying(true)
+          getCursorPosition(e)
         }}
         onMouseLeave={() => {
-          // close magnifier
-          setShowMagnifier(false);
+          setIsMagnifying(false)
         }}
-        alt={"Imagen del producto"}
-        className="w-[500px] h-[450px] object-contain rounded-xl "
       />
-
-      <div
-        style={{
-          display: showMagnifier ? "" : "none",
-          position: "absolute",
-
-          // prevent magnifier blocks the mousemove event of img
-          pointerEvents: "none",
-          // set size of magnifier
-          height: `${magnifierHeight}px`,
-          width: `${magnifieWidth}px`,
-          // move element center to cursor pos
-          top: `${y - magnifierHeight / 2}px`,
-          left: `${x - magnifieWidth / 2}px`,
-          opacity: "1", // reduce opacity so you can verify position
-          border: "1px solid transparent",
-          borderRadius: "12px",
-          backgroundColor: "#ecefdc",
-          backgroundImage: `url('${src}')`,
-          backgroundRepeat: "no-repeat",
-
-          // calculate zoomed image size
-          backgroundSize: `${imgWidth * zoomLevel}px ${imgHeight * zoomLevel}px`,
-
-          // calculate position of zoomed image.
-          backgroundPositionX: `${-x * zoomLevel + magnifieWidth / 2}px`,
-          backgroundPositionY: `${-y * zoomLevel + magnifierHeight / 2}px`,
-        }}
+      <div className={`absolute w-[200px] h-[200px] pointer-events-none transition-opacity duration-100`} style={{
+        top: `${y}%`,
+        left: `${x}%`,
+        transform: "translate(-50%, -50%)",
+        backgroundImage: `url(${img.src})`,
+        backgroundPosition: `${x}% ${y}%`,
+        opacity: isMagnifying ? 1 : 0
+      }}
       >
+
       </div>
+
     </div>
   );
 }

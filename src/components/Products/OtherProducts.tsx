@@ -14,7 +14,7 @@ const OtherProducts = (id: { id: string }) => {
     isError,
     data: otherProducts,
   } = useQuery<Product[]>({
-    queryKey: ["other-products"],
+    queryKey: ["other-products", id],
     queryFn: () => productsApi.GetProductsByLimit(3, productId),
   });
 

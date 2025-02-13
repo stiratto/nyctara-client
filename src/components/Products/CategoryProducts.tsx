@@ -32,15 +32,7 @@ const CategoryProducts = () => {
 
   return (
     <div
-      className={clsx(
-        [
-          "flex",
-          "flex-col",
-          "justify-center",
-          "items-center",
-          "py-32",
-          " container",
-        ],
+      className={clsx("flex flex-col justify-center items-center py-32 container space-y-8 size-full",
         { "h-screen": isLoading },
         { "h-auto": products?.length > 3 || "h-screen" },
       )}
@@ -57,12 +49,12 @@ const CategoryProducts = () => {
         )
         : products.length > 0
           ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {products.map((product: Product) => (
-                <ProductCard
-                  key={product.id}
-                  {...product}
-                />
+                  <ProductCard
+                    key={product.id}
+                    {...product}
+                  />
               ))}
             </div>
           )
