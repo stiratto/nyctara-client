@@ -1,6 +1,6 @@
 import categoriesApi from "@/api/categories/categories.api";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Input } from "../ui/input";
@@ -9,10 +9,10 @@ import { AddCategorySchema, TAddCategorySchema } from "@/schemas/AddCategorySche
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { TypographyH1 } from "../Typography/h1";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CategoryInterface } from "@/interfaces/Category.Interface";
 
 const UpdateCategory = () => {
   const { id } = useParams();
-  const [image, setImage] = useState<File | null>(null);
 
   const navigate = useNavigate();
 
@@ -21,24 +21,7 @@ const UpdateCategory = () => {
     reValidateMode: "onChange"
   })
 
-  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0]);
-    }
-  };
-
-  const getImagesPreview = () => {
-    if (image) {
-      const url = URL.createObjectURL(image);
-      return url;
-    }
-  };
-
-  useEffect(() => {
-    getImagesPreview();
-  }, [image]);
-
-  const { data: category } = useQuery({
+  const { data: category } = useQuery<CategoryInterface>({
     queryKey: ["update-category"],
     queryFn: () => categoriesApi.GetCategoryById(id as string),
     enabled: !!id
@@ -46,7 +29,7 @@ const UpdateCategory = () => {
 
 
   const { mutate: mutationCategory } = useMutation({
-    mutationFn: (body: any) => categoriesApi.UpdateCategory(body, id as string),
+    mutationFn: (data: CategoryInterface) => categoriesApi.UpdateCategory(data),
     onSuccess: () => {
       toast.success("La categoria fue actualizada");
       setTimeout(() => {
@@ -59,16 +42,28 @@ const UpdateCategory = () => {
     },
   });
 
-  const updateCategory: SubmitHandler<TAddCategorySchema> = async (e: any) => {
+  const updateCategory: SubmitHandler<TAddCategorySchema> = async (data, e: any) => {
     e.preventDefault();
-    const formData = new FormData();
 
-    formData.append("category_name", category.category_name);
-    formData.append("id", category.id);
-    formData.append("image", category.image as File);
+    try {
+      const categoryToSend = {
+        id: (category?.id as string),
+        category_name: data?.category_name
+      }
 
-    mutationCategory(formData);
+      mutationCategory(categoryToSend);
+    } catch (error: any) {
+      console.log(error)
+    }
+
+
   };
+
+  useEffect(() => {
+    form.reset({
+      category_name: category?.category_name
+    })
+  }, [form, category])
 
   return (
     <main className="h-auto sm:h-screen py-24 px-8 md:px-24 flex items-center justify-center">
@@ -82,7 +77,7 @@ const UpdateCategory = () => {
             <FormItem>
               <FormLabel>Nombre de la categoria/marca</FormLabel>
               <FormControl>
-                <Input placeholder="Categoria" {...field} value={category.category_name}
+                <Input placeholder="Categoria" {...field}
                 />
               </FormControl>
 
@@ -90,29 +85,6 @@ const UpdateCategory = () => {
             </FormItem>
           )} />
 
-
-          <FormField
-            control={form.control}
-            name="category_image"
-            render={({ field }) => {
-              const { value, ...fieldProps } = field; // Excluir `value`
-              return (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      {...fieldProps}
-                      onChangeCapture={handleImage}
-                    />
-                  </FormControl>
-                  <FormMessage />
-
-                </FormItem>
-
-              )
-            }}
-          />
           <button type="submit">Finalizar</button>
         </form>
       </Form>

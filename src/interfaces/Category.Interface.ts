@@ -1,4 +1,4 @@
-export interface CategoryInterface {
+export interface Category {
     id: string;
     category_name: string;
     createdAt?: string;

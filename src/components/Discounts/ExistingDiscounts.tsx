@@ -62,7 +62,7 @@ export const ExistingDiscounts = () => {
             && discounts?.map((discount) => (
               <TableRow
                 key={discount.id}
-                className="!bg-transparent !text-black"
+                className="bg-transparent! text-black!"
               >
                 <TableCell>{discount.discount_name}</TableCell>
                 <TableCell>{discount.discount_total}</TableCell>

@@ -37,7 +37,7 @@ export const ProductCard = ({
   }, [product_price]);
 
   return (
-    <Link to={`/producto/${id}`} className="flex flex-col !p-0 rounded">
+    <Link to={`/producto/${id}`} className="flex flex-col p-0! rounded">
       <div className="group relative flex flex-col">
         <LazyLoadImage src={product_images?.[0] as string} effect={"black-and-white"} className="w-64 h-80 object-fill rounded-lg" />
         <button className="opacity-0 group-hover:opacity-100 hover:bg-black/30 transition-all text-white bg-black/50 rounded-lg p-2 absolute top-[17rem] w-[15rem] ml-2 font-semibold">Ver producto</button>

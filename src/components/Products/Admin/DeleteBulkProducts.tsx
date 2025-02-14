@@ -106,7 +106,7 @@ const DeleteBulkProducts = () => {
 
       <TypographyH1>Eliminar productos</TypographyH1>
       <div className="bg-[#ecefdc] relative">
-        <Input onChange={search} placeholder="Busca por el nombre del producto" className="searchInput pl-8 !border-gray-500 w-min" />
+        <Input onChange={search} placeholder="Busca por el nombre del producto" className="searchInput pl-8 border-gray-500! w-min" />
         <Search size={17} className="absolute top-[10px] left-2" />
       </div>
 
@@ -114,19 +114,21 @@ const DeleteBulkProducts = () => {
       {isLoading && !isError && <LoaderCircle size={30} className="animate-spin mx-auto" />}
       {!isLoading && isError && <p className="text-red-500">Hubo un error.</p>}
       {!isLoading && !isError && (
-        <Table className="block !h-[24rem] overflow-y-scroll border border-gray-500 rounded-sm !w-full !max-w-xl" >
-          <TableHeader className="sticky top-0 shadow-[0_5px_30px_-15px_rgba(0,0,0,0.3)] bg-[#ecefdc] w-full">
-            <TableHead>Nombre</TableHead>
-            <TableHead>Precio</TableHead>
-            <TableHead>Categoria</TableHead>
-
-
+        <Table className="block h-[24rem] overflow-y-scroll border border-gray-500 rounded-sm w-full max-w-xl" >
+          <TableHeader className="sticky top-0 shadow-sm bg-[#ecefdc] w-full">
+            <TableRow>
+              <TableHead className="w-[200px]">Nombre</TableHead>
+              <TableHead>Precio</TableHead>
+              <TableHead>Categoria</TableHead>
+            </TableRow>
           </TableHeader>
+
+
           <TableBody className="" ref={containerRef}>
             {results && results.length > 0 ? results?.map((p) => (
               <TableRow className="w-full" key={p.id}>
 
-                <TableCell className="flex items-center gap-2 w-full">
+                <TableCell className="flex items-center gap-2 w-[200px]">
                   <Input
                     type="checkbox"
                     className="w-min productCheckbox"
@@ -158,7 +160,7 @@ const DeleteBulkProducts = () => {
       <Button
         variant="destructive"
         onClick={onSubmit}
-        className="space-x-4 rounded-none w-full"
+        className="space-x-8 w-full"
         disabled={Array.from(productsToDelete as Set<string>).length < 1}>
         <Trash2 size={20} />
         Eliminar seleccionados

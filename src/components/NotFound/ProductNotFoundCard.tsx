@@ -13,7 +13,7 @@ export const ProductNotFoundCard = ({
 }: Product) => {
   return (
     <Link to={`/producto/${id}`} className="flex flex-col w-full">
-      <div className="flex flex-col break-words xs:flex-row items-center px-8 py-4 gap-8 flex-grow ">
+      <div className="flex flex-col break-words xs:flex-row items-center px-8 py-4 gap-8 grow ">
         <img src={product_images?.[0] as string} className="w-24 " />
         <div className="flex flex-col text-sm gap-1">
           <h1 className="text-black text-lg">{product_name}</h1>

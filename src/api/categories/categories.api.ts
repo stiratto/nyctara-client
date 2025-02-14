@@ -1,6 +1,7 @@
 import { store } from "@/store/store.ts";
 import apiClient from "../index.ts";
 import { getAxiosErrorResponse } from "@/utils/utils.ts";
+import { Category } from "@/interfaces/Category.Interface.ts";
 
 const token = store.getState().user.token;
 
@@ -55,26 +56,31 @@ async function CreateCategory(body: any) {
     const errorMessage = getAxiosErrorResponse(error)
     throw new Error(errorMessage);
   }
-}
 
-async function UpdateCategory(body: any, id: string) {
-  try {
-    const response = await apiClient.patch(
-      `/categories/update-category/${id}`,
-      body,
-      { headers: { "Authorization": "Bearer " + token } },
-    );
-    return response.data;
-  } catch (error) {
-    const errorMessage = getAxiosErrorResponse(error)
-    throw new Error(errorMessage);
+
+  async function UpdateCategory(data: Category) {
+    try {
+      const response = await apiClient.patch(
+        `/categories/update-category/${data.id}`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+          }
+        },
+      );
+      return response.data;
+    } catch (error) {
+      const errorMessage = getAxiosErrorResponse(error)
+      throw new Error(errorMessage);
+    }
   }
-}
 
-export default {
-  GetCategoryProducts,
-  GetAllCategories,
-  CreateCategory,
-  GetCategoryById,
-  UpdateCategory,
-};
+  export default {
+    GetCategoryProducts,
+    GetAllCategories,
+    CreateCategory,
+    GetCategoryById,
+    UpdateCategory,
+  };
