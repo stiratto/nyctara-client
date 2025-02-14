@@ -50,16 +50,16 @@ export function Marcas() {
   };
 
   return (
-    <div className="!static ">
+    <div className="static! ">
       <button
-        className={clsx("hamburguer", show ? "active" : "z-[10]")}
+        className={clsx("hamburguer cursor-pointer", show ? "active" : "z-10")}
         onClick={reveal}
       >
       </button>
       {show && (
-        <div className="fixed inset-0 z-[800]">
+        <div className="fixed inset-0 z-800">
           <div className="absolute inset-0 bg-black/70 " onClick={reveal}></div>
-          <div className="bg-white rounded-xl p-8 h-fit flex flex-col justify-between  z-[1000] absolute top-0 left-4 mx-2 sm:mx-16 sm:w-96 w-auto mt-14">
+          <div className="bg-white rounded-xl p-8 h-fit flex flex-col justify-between  z-1000 absolute top-0 left-4 mx-2 sm:mx-16 sm:w-96 w-auto mt-14">
             <ul className="flex flex-col gap-4 my-8">
               <div className="flex gap-2 items-center relative">
                 <Input

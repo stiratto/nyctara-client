@@ -37,7 +37,7 @@ const SearchProductsResults = () => {
       <div
         className={clsx(
           "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 h-full gap-4 p-8",
-          { "!flex !justify-center !items-center": products?.length === 0 },
+          { "flex! justify-center! items-center!": products?.length === 0 },
         )}
       >
         {!isLoading && isError && <p>No se pudo obtener los productos...</p>}

@@ -76,13 +76,13 @@ const CartProduct = ({ product_name, product_price, id, product_quantity, produc
               <Button
                 disabled={product_quantity === 1}
                 onClick={() => removeProductQuantity(id)}
-                className="!px-3 bg-transparent border border-gray-600 text-black font-bold hover:bg-black/10"
+                className="px-3! bg-transparent border border-gray-600 text-black font-bold hover:bg-black/10"
               >
                 <Minus size={13} />
               </Button>
               <h1 className="text-lg">{product_quantity}</h1>
               <Button
-                className="!px-3 bg-transparent border border-gray-600 text-black font-bold hover:bg-black/10"
+                className="px-3! bg-transparent border border-gray-600 text-black font-bold hover:bg-black/10"
                 onClick={() => addProductQuantity(id)}
               >
                 <Plus size={15} />
@@ -90,7 +90,7 @@ const CartProduct = ({ product_name, product_price, id, product_quantity, produc
             </div>
             <Button
               onClick={() => deleteProduct(id)}
-              className="flex items-center gap-3 !px-3 text-white bg-red-500 p-1 hover:bg-red-300 font-medium"
+              className="flex items-center gap-3 px-3! text-white bg-red-500 p-1 hover:bg-red-300 font-medium"
             >
               <Trash2 size={15} />
               <p>Remover</p>

@@ -8,7 +8,6 @@ const PageNotFound = lazy(() => import('../components/NotFound/PageNotFound.tsx'
 const InfoPage = lazy(() => import('../pages/InfoPage.tsx'))
 const AddUpdateCategory = lazy(() => import('@/components/Categories/AddUpdateCategory.tsx'))
 const Product = lazy(() => import('../components/Products/Product.tsx'))
-const AddProduct = lazy(() => import('../components/Products/Admin/AddProduct.tsx'))
 const ProductsAdminPanel = lazy(() => import('../components/Products/Admin/ProductAdminPanel.tsx'))
 const EditProduct = lazy(() => import('../components/Products/Admin/EditProduct.tsx'))
 const Discounts = lazy(() => import('../components/Discounts/Discounts.tsx'))

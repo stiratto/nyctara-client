@@ -8,6 +8,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { TypographyH2 } from "../Typography/h2";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "../ui/button";
 
 interface Category {
   category_name: string;
@@ -58,7 +59,7 @@ const AddCategory = () => {
   return (
     <Form {...form} >
       <form
-        className="max-w-sm flex flex-col justify-center items-start gap-4"
+        className="flex flex-col items-start gap-4"
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <TypographyH2>Crear nueva categoria</TypographyH2>
@@ -78,12 +79,12 @@ const AddCategory = () => {
           )}
         />
 
-        <button
+        <Button
           type="submit"
           className="bg-black w-full text-white rounded-xl p-2"
         >
           Crear categoria
-        </button>
+        </Button>
       </form>
     </Form>
   );

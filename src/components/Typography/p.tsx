@@ -10,7 +10,7 @@ export function TypographyP({
   return (
     <p
       className={clsx(
-        "leading-7 [&:not(:first-child)]:mt-2 text-pretty",
+        "leading-7 not-first:mt-2 text-pretty",
         className,
       )}
     >

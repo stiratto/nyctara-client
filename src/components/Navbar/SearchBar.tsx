@@ -45,7 +45,7 @@ export const SearchBar = () => {
       <div className="flex items-center justify-center w-full gap-4">
         <button
           type="button"
-          className="cursor-pointer relative z-[900]"
+          className="cursor-pointer relative z-900"
           onClick={handleSearch}
           id="button"
         >
@@ -54,7 +54,7 @@ export const SearchBar = () => {
       </div>
       {show
         ? (
-          <div className="fixed inset-0 z-[800]">
+          <div className="fixed inset-0 z-800">
             <div className="relative">
               <div
                 className="absolute w-screen h-screen left-0 top-0 inset-0 bg-black/70 "
@@ -63,7 +63,7 @@ export const SearchBar = () => {
               </div>
 
               <form
-                className="bg-white rounded-xl p-8 flex flex-col justify-between my-16 z-[1100] absolute top-0 right-4 mx-2 md:mx-24"
+                className="bg-white rounded-xl p-8 flex flex-col justify-between my-16 z-1100 absolute top-0 right-4 mx-2 md:mx-24"
                 onSubmit={handleSearch}
               >
                 {show && (
@@ -71,7 +71,7 @@ export const SearchBar = () => {
                     name="search"
                     type="text"
                     placeholder="Busca un producto"
-                    className="p-2 z-[900] placeholder:text-xs placeholder:md:text-sm"
+                    className="p-2 z-900 placeholder:text-xs md:placeholder:text-sm"
                     onChange={(e) => setQuery(e.target.value)}
                   />
                 )}

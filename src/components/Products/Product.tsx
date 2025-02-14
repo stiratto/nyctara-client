@@ -112,7 +112,7 @@ const Product = () => {
                     src={image?.src}
                     className={clsx(`w-[90px] h-[90px] cursor-pointer border-2 border-transparent object-cover rounded-full hover:border-gray-500`,
                       // check if current image is the one selected
-                      index === currentIndex && "!border-black"
+                      index === currentIndex && "border-black!"
                     )}
                     onClick={() => (
                       setCurrentImage(image?.src), setCurrentIndex(index)
@@ -157,7 +157,7 @@ const Product = () => {
                 <div className="flex gap-4 text-lg">
                   {product?.product_tags?.map((tag: string) => (
                     <Badge
-                      className="bg-transparent uppercase text-black border-black border p-2 rounded-xl hover:!bg-transparent bg-gray-200"
+                      className="bg-transparent uppercase text-black border-black border p-2 rounded-xl hover:bg-transparent! bg-gray-200"
                       key={uuidv4()}
                     >
                       {tag}

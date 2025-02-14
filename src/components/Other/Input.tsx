@@ -26,7 +26,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         accept={accepts}
         value={value}
         className={clsx(
-          `bg-transparent border-b border-black p-2 focus:outline-none w-full`,
+          `bg-transparent border-b border-black p-2 focus:outline-hidden w-full`,
           className,
         )}
         onChange={onChange}
