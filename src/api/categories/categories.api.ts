@@ -56,31 +56,32 @@ async function CreateCategory(body: any) {
     const errorMessage = getAxiosErrorResponse(error)
     throw new Error(errorMessage);
   }
+}
 
 
-  async function UpdateCategory(data: Category) {
-    try {
-      const response = await apiClient.patch(
-        `/categories/update-category/${data.id}`,
-        data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + token
-          }
-        },
-      );
-      return response.data;
-    } catch (error) {
-      const errorMessage = getAxiosErrorResponse(error)
-      throw new Error(errorMessage);
-    }
+async function UpdateCategory(data: Category) {
+  try {
+    const response = await apiClient.patch(
+      `/categories/update-category/${data.id}`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        }
+      },
+    );
+    return response.data;
+  } catch (error) {
+    const errorMessage = getAxiosErrorResponse(error)
+    throw new Error(errorMessage);
   }
+}
 
-  export default {
-    GetCategoryProducts,
-    GetAllCategories,
-    CreateCategory,
-    GetCategoryById,
-    UpdateCategory,
-  };
+export default {
+  GetCategoryProducts,
+  GetAllCategories,
+  CreateCategory,
+  GetCategoryById,
+  UpdateCategory,
+};

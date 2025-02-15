@@ -10,14 +10,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { CategoryInterface } from "@/interfaces/Category.Interface.ts";
+import { Category } from "@/interfaces/Category.Interface.ts";
 import { Product, ProductQuality } from "@/interfaces/Product.Interface.ts";
 import queryClient from "@/main";
 import {
   TAddProductSchema,
   AddProductSchema,
 } from "@/schemas/AddProductSchema";
-import { RootState } from "@/store/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
@@ -29,9 +28,8 @@ import {
 } from "@/components/ui/select";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { CloudUpload, X } from "lucide-react";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -100,7 +98,7 @@ const AddProduct = () => {
     form.setValue(state, newState, { shouldValidate: true, shouldDirty: true });
   };
 
-  const { data: categories } = useQuery<CategoryInterface[]>({
+  const { data: categories } = useQuery<Category[]>({
     queryKey: ["categories"],
     queryFn: () => categoriesApi.GetAllCategories(),
     retry: 3,
@@ -276,7 +274,7 @@ const AddProduct = () => {
               </label>
               <div className="flex gap-4">
                 {form.getValues("product_images") &&
-                form.getValues("product_images").length > 0 ? (
+                  form.getValues("product_images").length > 0 ? (
                   tempImagesUrl.length >= 1 &&
                   tempImagesUrl.map((imageUrl: any, index: any) => (
                     <div key={index}>
@@ -404,7 +402,6 @@ const AddProduct = () => {
                       <div className="flex items-center gap-2">
                         <Input
                           name="note"
-                          value="note"
                           type="text"
                           value={note}
                           placeholder="Escribe una nota"

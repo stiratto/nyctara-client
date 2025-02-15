@@ -5,12 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Product } from "@/interfaces/Product.Interface"
 import queryClient from "@/main";
-import { RootState } from "@/store/store";
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { warn } from "console";
 import { ExternalLink, LoaderCircle, Search, Trash2 } from "lucide-react";
-import { ChangeEvent, memo, useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { ChangeEvent, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { toast } from "sonner"
 
@@ -46,11 +43,9 @@ const DeleteBulkProducts = () => {
     })
   }
 
-  const token = useSelector((state: RootState) => state.user.token) as string
-
   const { mutate } = useMutation({
     mutationKey: ['deleteBulkProducts'],
-    mutationFn: (productsToDeleteArray: string[]) => productsApi.DeleteBulkProducts(productsToDeleteArray, token),
+    mutationFn: (productsToDeleteArray: string[]) => productsApi.DeleteBulkProducts(productsToDeleteArray),
     onMutate: async () => {
       try {
         // Cancel the queries on the category-products

@@ -1,7 +1,6 @@
 import { Discount } from "@/interfaces/Discount.interface.ts";
 import { store } from "@/store/store.ts";
 import apiClient from "../index.ts";
-import axios, { AxiosError, AxiosPromise } from "axios";
 import { getAxiosErrorResponse } from "@/utils/utils.ts";
 
 const token = store.getState().user.token;

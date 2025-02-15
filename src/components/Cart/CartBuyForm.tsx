@@ -41,7 +41,7 @@ export const CartBuyForm = () => {
 
     const onSubmit: SubmitHandler<CartFormData> = (data) => {
         try {
-            const message = createWhatsAppMessage(data, cartProducts);
+            const message = createWhatsAppMessage(data);
             window.open(
                 `https://api.whatsapp.com/send?phone=573028317599&text=${message}`,
                 "_blank",

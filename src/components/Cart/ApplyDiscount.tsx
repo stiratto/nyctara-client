@@ -17,11 +17,11 @@ const ApplyDiscount = () => {
 
     const { mutate: getDiscount, data: discountOnDb } = useMutation<Discount>({
         mutationFn: () => discountsApi.GetDiscountByName(discount),
-        onSuccess: () => {
-            console.log("Aplicando descuento chaval")
-            dispatch(applyDiscount(discountOnDb as Discount))
+        onSuccess: (data: Discount) => {
+            dispatch(applyDiscount(data))
         },
-        onError: () => {
+        onError: (error: any) => {
+            console.log(error)
             toast.error("Error al verificar el descuento.");
         },
     });

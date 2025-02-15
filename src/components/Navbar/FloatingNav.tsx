@@ -4,7 +4,7 @@ import { Marcas } from "./Marcas";
 import Cart from "@/components/Cart/Cart";
 import { SearchBar } from "./SearchBar";
 import { NavLink as Link } from "react-router-dom";
-import { AvailableCoupon } from "./AvailableCoupon";
+import { AvailableCoupon } from "./AvailableDiscount";
 
 export const Navbar = () => {
   return (

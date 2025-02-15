@@ -15,12 +15,13 @@ export const addToCart = async (
                 product: {
                     ...product,
                 },
-                discountUserUsing,
+                discountUserUsing: { ...discountUserUsing },
             }),
         );
         toast.success("El producto se anadio al carrito!");
     } catch (error) {
         toast.error("No se pudo agregar al carrito :(");
+        console.log(error)
         throw new Error("Error al agregar al carrito");
     }
 };

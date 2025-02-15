@@ -1,14 +1,14 @@
 import CartProduct from "@/components/Cart/CartProduct";
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Product } from "@/interfaces/Product.Interface";
-import { AppDispatch, RootState } from "@/store/store";
 import { ShoppingCart } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import ApplyDiscount from "./ApplyDiscount";
 import { CartBuyForm } from "./CartBuyForm";
 import ProductsNotFound from "../NotFound/ProductsNotFound";
 import { useEffect, useState } from "react";
 import { getCartTotal } from "@/utils/cartUtils";
+import { RootState } from "@/store/store";
 
 
 const Cart = () => {

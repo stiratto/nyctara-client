@@ -11,13 +11,7 @@ export const SearchBar = () => {
   const navigate = useNavigate();
 
 
-  const handleClickOutside = (e: MouseEvent) => {
-    if (divRef.current && !divRef.current.contains(e.target)) {
-      setShow(false)
-    }
-  }
-
-  const handleSearch = () => {
+   const handleSearch = () => {
     setShow(true);
     inputRef?.current?.focus();
     const searchValue = query.trim();

@@ -1,7 +1,6 @@
-import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-export function ImageMagnifier(img) {
+export function ImageMagnifier(img: any) {
   // magnifier idea
   // podemos poner la posicion del img zoomeada en el medio delcursor
   const [[x, y], setSize] = useState([0, 0])

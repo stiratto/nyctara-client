@@ -1,6 +1,6 @@
 "use client";
 import categoriesApi from "@/api/categories/categories.api";
-import { CategoryInterface } from "@/interfaces/Category.Interface.ts";
+import { Category } from "@/interfaces/Category.Interface.ts";
 import { RootState } from "@/store/store.ts";
 import { logOut } from "@/store/userAuth/userAuthSlice.ts";
 import { useQuery } from "@tanstack/react-query";
@@ -8,7 +8,7 @@ import clsx from "clsx";
 import { LoaderCircle, LogOut, Search } from "lucide-react";
 import { ShieldHalf } from "lucide-react";
 import * as React from "react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { NavLink } from "react-router-dom";
@@ -38,9 +38,9 @@ export function Marcas() {
     setSearchTerm(newSearchTerm);
   };
 
-  const filteredCategories = categories?.length > 0 && categories?.filter((category: CategoryInterface) =>
+  const filteredCategories = useMemo(() => categories?.length > 0 && categories?.filter((category: Category) =>
     category.category_name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ), [searchTerm, categories])
 
   const [show, setShow] = useState(false);
 
@@ -80,7 +80,7 @@ export function Marcas() {
                 {!isLoading
                   && !isError
                   && filteredCategories
-                  && filteredCategories?.map((category: CategoryInterface) => (
+                  && filteredCategories?.map((category: Category) => (
 
                     <NavLink
                       key={category.id}

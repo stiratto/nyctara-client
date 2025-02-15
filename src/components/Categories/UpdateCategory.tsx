@@ -9,7 +9,7 @@ import { AddCategorySchema, TAddCategorySchema } from "@/schemas/AddCategorySche
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { TypographyH1 } from "../Typography/h1";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CategoryInterface } from "@/interfaces/Category.Interface";
+import { Category } from "@/interfaces/Category.Interface";
 
 const UpdateCategory = () => {
   const { id } = useParams();
@@ -21,7 +21,7 @@ const UpdateCategory = () => {
     reValidateMode: "onChange"
   })
 
-  const { data: category } = useQuery<CategoryInterface>({
+  const { data: category } = useQuery<Category>({
     queryKey: ["update-category"],
     queryFn: () => categoriesApi.GetCategoryById(id as string),
     enabled: !!id
@@ -29,7 +29,7 @@ const UpdateCategory = () => {
 
 
   const { mutate: mutationCategory } = useMutation({
-    mutationFn: (data: CategoryInterface) => categoriesApi.UpdateCategory(data),
+    mutationFn: (data: Category) => categoriesApi.UpdateCategory(data),
     onSuccess: () => {
       toast.success("La categoria fue actualizada");
       setTimeout(() => {

@@ -29,7 +29,7 @@ import { toast } from "sonner"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Discount } from "@/interfaces/Discount.interface"
 
-export function DatePickerForm() {
+export function AddDiscountForm() {
   const form = useForm<TAddDiscountSchema>({
     resolver: zodResolver(AddDiscountSchema),
   })
@@ -94,8 +94,8 @@ export function DatePickerForm() {
             </FormLabel>
             <FormControl>
               <div>
+                <span className="text-gray-600 absolute top-8 left-2">%</span>
                 <Input type="number" {...field} className="w-min px-6" />
-                <span className="text-gray-600 absolute top-10 left-2">%</span>
               </div>
             </FormControl>
             <FormMessage />

@@ -1,24 +1,34 @@
 import { Discount } from "@/interfaces/Discount.interface";
-import { Product } from "@/interfaces/Product.Interface";
-import { Dispatch, MiddlewareAPI } from "@reduxjs/toolkit";
 import { discountNotExistsError } from "./discounts/DiscountsSlice";
 
-export function changePriceIfUserUsingDiscount({ getState }) {
-   return (next) => (action) => {
+
+export function changePriceIfUserUsingDiscount({ getState }: any) {
+   return (next: any) => (action: any) => {
+      console.log("ejecutandi idelwalrer...")
+
       if (action.type === "cart/addProductToCart") {
-         const currentDiscountUsing = getState().discounts.current_discount_being_used
+         try {
+            const currentDiscountUsing = getState().discounts.current_discount_being_used
 
-         if (!currentDiscountUsing) {
-            return next(action)
+            if (!currentDiscountUsing) {
+               return next(action)
+            }
+
+
+            let payload = { ...action.payload}; // Crea una copia superficial del payload
+            console.log(payload)
+            const product = { ...payload }; // Crea una copia del producto
+
+            if (product && product.product_price) {
+               product.product_price -= Math.floor((product?.product_price * parseInt(currentDiscountUsing.discount_total)) / 100)
+               payload = product; // Asigna la copia modificada del producto
+            }
+
+            return next({ ...action, payload });
+         } catch (error: any) {
+            console.log(error)
          }
-
-         const payload = { ...action.payload }; // Crea una copia superficial del payload
-         const product: Product = { ...payload.product }; // Crea una copia del producto
-
-         product.product_price -= Math.floor((product.product_price * currentDiscountUsing.discount_total) / 100)
-         payload.product = product; // Asigna la copia modificada del producto
-
-         return next({ ...action, payload }); // Pasa el nuevo action con la copia modificada
+         // Pasa el nuevo action con la copia modificada
       }
 
       return next(action)
@@ -26,9 +36,9 @@ export function changePriceIfUserUsingDiscount({ getState }) {
 }
 
 
-export function checkIfUserAlreadyUsedDiscount({ getState }) {
-   return (next) => (action) => {
-      if (action.type === "discounts/applyDiscount") {
+export const checkIfUserAlreadyUsedDiscount = ({ getState }: any) => {
+   return (next: any) => (action: any) => {
+      if (action?.type === "discounts/applyDiscount") {
          const discountsUserAlreadyUsed: Discount[] = getState().discounts.discounts_user_already_used
 
          const currentDiscountUsing = getState().discounts.current_discount_being_used
@@ -37,7 +47,8 @@ export function checkIfUserAlreadyUsedDiscount({ getState }) {
             return next(discountNotExistsError({ error: "Ya estas usando un descuento!" }))
          }
 
-         const userAlreadyUsedThatDiscount = discountsUserAlreadyUsed.find((d) => d.id === action.payload.discount.id)
+         console.log(action)
+         const userAlreadyUsedThatDiscount = discountsUserAlreadyUsed.find((discount) => discount?.discount_name === action?.payload?.discount_name)
 
          if (userAlreadyUsedThatDiscount) {
             return next(discountNotExistsError({ error: "Ya utilizaste ese descuento!" }))

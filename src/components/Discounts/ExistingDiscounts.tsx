@@ -14,7 +14,7 @@ export const ExistingDiscounts = () => {
     isError: gettingDiscountsError,
   } = useQuery<Discount[]>({
     queryKey: ["discounts"],
-    queryFn: () => discountsApi.GetAllDiscounts(),
+    queryFn: () => discountsApi.GetDiscounts(),
   });
 
   const { mutate: deleteDiscount } = useMutation({

@@ -10,10 +10,7 @@ import { NavLink as Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import productsApi from "../../api/products/products.api";
 import ProductsNotFound from "../NotFound/ProductsNotFound.tsx";
-import { TypographyH1 } from "../Typography/h1.tsx";
-import { TypographyH2 } from "../Typography/h2.tsx";
 import { TypographyH3 } from "../Typography/h3.tsx";
-import { TypographyH4 } from "../Typography/h4.tsx";
 import { TypographyP } from "../Typography/p.tsx";
 import { Badge } from "../ui/badge.tsx";
 import { Button } from "../ui/button.tsx";
@@ -23,6 +20,7 @@ import ProductBreadcrumb from "./ProductBreadcrumb";
 import { LoaderCircle, ShoppingCart } from "lucide-react";
 import { Discount } from "@/interfaces/Discount.interface.ts";
 import clsx from "clsx";
+import { cn } from "@/lib/utils.ts";
 
 const Product = () => {
   const { id } = useParams();
@@ -79,13 +77,8 @@ const Product = () => {
   };
 
 
-
-  useEffect(() => {
-    console.log(id)
-  }, [id])
-
   return (
-    <div className="duration-600 flex  flex-col items-center justify-center pt-28 px-8 lg:px-24">
+    <div className={cn("duration-600 flex  flex-col items-center justify-center pt-28 px-8 lg:px-24", productError && "h-screen")}>
       {productLoading && !productError && (
         <div className="flex flex-col items-center justify-center py-14  xl:h-screen xl:container px-24">
           <LoaderCircle size={70} className="animate-spin duration-600" />
@@ -126,6 +119,9 @@ const Product = () => {
           </div>
           <div className="flex flex-col gap-4 mt-8">
             <h1 className="font-extrabold text-5xl break-all max-w-sm">{product?.product_name}</h1>
+            <p className="text-sm text-gray-500 "> {product?.product_tags.map((tag) => (
+              <Badge className="bg-transparent hover:bg-transparent text-gray-500 border-gray-400">{tag}</Badge>
+            ))}</p>
             <div className="flex items-center justify-between">
               <TypographyP className="font-bold text-2xl">
                 ${formattedPrice}
@@ -139,31 +135,13 @@ const Product = () => {
             <TypographyP className="break-words max-w-sm text-gray-700">
               {product?.product_description}
             </TypographyP>
+            <Badge className="bg-transparent text-black border-gray-700 w-min hover:bg-transparent">
+              {product?.product_category?.category_name}
+            </Badge>
             <div>
-              <TypographyH3>Notas de fragancia</TypographyH3>
+              <h2 className="font-bold">Notas de fragancia</h2>
               <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  py-2">
                 {product?.product_notes?.map((note: string) => <li key={uuidv4()}>{note}</li>)}
-              </ul>
-            </div>
-            <div className="flex flex-col">
-              <Badge className="bg-transparent text-black border-gray-700 w-min hover:bg-transparent">
-                {product?.product_category?.category_name}
-              </Badge>
-            </div>
-
-            <div>
-              <ul className="flex flex-col gap-4 text-lg">
-                <TypographyH3>Etiquetas</TypographyH3>
-                <div className="flex gap-4 text-lg">
-                  {product?.product_tags?.map((tag: string) => (
-                    <Badge
-                      className="bg-transparent uppercase text-black border-black border p-2 rounded-xl hover:bg-transparent! bg-gray-200"
-                      key={uuidv4()}
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
               </ul>
             </div>
 
@@ -181,7 +159,7 @@ const Product = () => {
             <div className="flex flex-col md:flex-row gap-8 items-center ">
               {isAuthenticated && <DeleteProductDialog id={product.id as string} />}
               {isAuthenticated && (
-                <Link to={`/ admin / editar - producto / ${product?.id}`}>
+                <Link to={`/admin/editar-producto/${product?.id}`}>
                   <Button variant={"secondary"}>Editar producto</Button>
                 </Link>
               )}
@@ -189,7 +167,10 @@ const Product = () => {
           </div>
         </div>
       )}
-      <OtherProducts id={product?.id as string} />
+      {!productLoading && !productError && product && (
+
+        <OtherProducts id={product?.id as string} />
+      )}
     </div>
   );
 };

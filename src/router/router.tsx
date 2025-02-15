@@ -2,7 +2,6 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "../App.tsx";
 import { lazy } from "react";
 import Layout from "../layouts/Layout.tsx"
-
 const Login = lazy(() => import('../pages/Login.tsx'))
 const PageNotFound = lazy(() => import('../components/NotFound/PageNotFound.tsx'))
 const InfoPage = lazy(() => import('../pages/InfoPage.tsx'))

@@ -1,11 +1,10 @@
-import { Action, combineReducers, configureStore, createAsyncThunk, ThunkAction } from "@reduxjs/toolkit";
+import { Action, combineReducers, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import cartProductsReducer from "./cart/CartProductsSlice";
 import discountsReducer from "./discounts/DiscountsSlice";
 import userAuthReducer from "./userAuth/userAuthSlice";
 import { changePriceIfUserUsingDiscount, checkIfUserAlreadyUsedDiscount } from "./middlewares.ts";
-
 
 export type AppThunk = ThunkAction<void, RootState, unknown, Action<string>>;
 

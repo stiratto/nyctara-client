@@ -46,7 +46,7 @@ export const SearchProduct = () => {
 
    return (
       <div className="relative w-full space-y-1 max-w-2xl">
-         <div className="flex items-center">
+         <div className="flex items-center ">
             <Input
                placeholder="Buscar productos"
                onChange={search}
@@ -57,7 +57,7 @@ export const SearchProduct = () => {
          <div
             ref={resultsRef}
             className={clsx(
-               "w-full max-h-48 overflow-y-scroll overflow-x-hidden absolute top-38 border rounded-lg bg-white",
+               "w-full max-h-48 overflow-y-scroll overflow-x-hidden absolute top-11 border rounded-lg bg-white",
                show ? "block" : "hidden",
             )}
          >

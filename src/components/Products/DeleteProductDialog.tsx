@@ -13,6 +13,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
+import { Product } from "@/interfaces/Product.Interface";
 
 export const DeleteProductDialog = ({ id }: { id: string }) => {
   const navigate = useNavigate();
@@ -20,14 +21,23 @@ export const DeleteProductDialog = ({ id }: { id: string }) => {
   const { mutate: deleteProduct } = useMutation({
     mutationFn: () => productsApi.DeleteProduct(id),
     onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ["category-products"] });
+      const previousProducts = queryClient.getQueryData<Product[]>(["category-products"])
+
+      const data = previousProducts?.filter((p) => p.id !== id)
+
+      queryClient.setQueryData(["category-products"], (oldProducts: Product[]) => oldProducts ? [...oldProducts, data] : [data])
+
+      return { previousProducts }
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["category-products"] });
+      queryClient.invalidateQueries({ queryKey: ["productToEdit"] });
       toast.success("Producto eliminado");
       navigate("/");
     },
-    onError: (err, context) => {
+    onError: (err: any, context: any) => {
       toast.error("No se pudo eliminar el producto");
+      queryClient.setQueryData(["category-products"], context.previousProducts)
       throw err;
     },
   });

@@ -6,24 +6,23 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { ProductQuality } from "@/interfaces/Product.Interface";
 import { EditProductSchema, TEditProductSchema } from "@/schemas/EditProductShema";
-import { RootState } from "@/store/store.ts";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { CloudUpload, LoaderCircle, X } from "lucide-react";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import categoriesApi from "@/api/categories/categories.api";
 import { Badge } from "@/components/ui/badge";
+import { getImagesPreview } from "@/utils/utils";
+import { Category } from "@/interfaces/Category.Interface";
 
 const EditProduct = () => {
-  const id = useParams().id;
+  const id = useParams().id as string;
 
   const navigate = useNavigate();
-  const token = useSelector((state: RootState) => state.user.token) as string;
 
   const form = useForm<TEditProductSchema>({
     resolver: zodResolver(EditProductSchema),
@@ -40,24 +39,22 @@ const EditProduct = () => {
     note,
     product_tags,
     product_notes,
-    product_name,
-    product_price,
-    product_quality,
     product_images,
-    product_category,
   ] = form.watch([
     "tag",
     "note",
     "product_tags",
     "product_notes",
-    "product_name",
-    "product_price",
-    "product_quality",
     "product_images",
-    "product_category",
   ]);
 
   const [urls, setUrls] = useState<string[]>()
+
+  const deleteItem = (index: number, state: "product_tags" | "product_notes") => {
+    const stateVal = form.getValues(state)
+    const newState = stateVal.filter((_, i) => i !== index)
+    form.setValue(state, newState)
+  }
 
 
   const handleValue = (e: any) => {
@@ -65,7 +62,7 @@ const EditProduct = () => {
   };
 
 
-  const deleteImage = (index, id) => {
+  const deleteImage = (index: number) => {
     // eliminar imagenes de product_images y updatear
     // unas imagenes pueden ser string y otras pueden ser de tipo File
     // (las que el usuario acaba de seleccionar)
@@ -75,7 +72,7 @@ const EditProduct = () => {
       // extraer el nombre del archivo del url
       const regex = /\/([^/]+\.webp)/
       const match = imageToDelete.match(regex)
-      const filename = match[1]
+      const filename = match?.[1] as string
       mutation.mutate({ id, image: filename })
     }
     const newImages = product_images.filter((_, i) => i !== index)
@@ -89,18 +86,24 @@ const EditProduct = () => {
   });
 
   const deleteImageFromProduct = ({ id, image }: { id: string, image: string }) => {
-    return productsApi.DeleteProductImage(id, image, token)
+    return productsApi.DeleteProductImage(id, image)
   }
 
   const mutation = useMutation({
     mutationFn: deleteImageFromProduct
   });
 
-  const { isLoading: categoriesIsLoading, isError: categoriesIsError, data: categories } = useQuery({
+  const { data: categories } = useQuery<Category[]>({
     queryKey: ["categories", id],
     queryFn: () => categoriesApi.GetAllCategories()
 
   });
+
+  const memoizedCategories = useMemo(() => {
+    return categories?.map((c) => (
+      <SelectItem value={c.category_name}>{c.category_name}</SelectItem>
+    ))
+  }, [categories])
 
   const { mutate: editProduct } = useMutation({
     mutationFn: (data: FormData) => productsApi.EditProduct(product?.id as string, data),
@@ -113,16 +116,10 @@ const EditProduct = () => {
     }
   })
 
-  const getImagesPreview = () => {
+  const handleImagesPreview = () => {
     const images = form.getValues("product_images")
-    const imageUrls = (images as any)?.map((image, _) => {
-      if (typeof image === "string") {
-        return image;
-      } else {
-        const url = URL.createObjectURL(image);
-        return url;
-      }
-    });
+    const imageUrls = getImagesPreview(images)
+
 
     setUrls(imageUrls)
   };
@@ -154,15 +151,11 @@ const EditProduct = () => {
 
   }, [product, form])
 
-
-
   useEffect(() => {
     if (Array.isArray(product_images) && product_images?.length > 0) {
-      getImagesPreview();
+      handleImagesPreview();
     }
   }, [form.getValues('product_images')]);
-
-
 
   const onSubmit: SubmitHandler<TEditProductSchema> = async (data, e) => {
     e?.preventDefault();
@@ -214,7 +207,7 @@ const EditProduct = () => {
 
   return (
     <div
-      className={`flex flex-col items-center justify-center w-full max-w-xl mx-auto  py-[6em]`}
+      className={`flex flex-col items-center justify-center w-full max-w-xl mx-auto  py-[9em]`}
     >
       {isGettingProducts && <LoaderCircle className="h-screen animate-spin" size={40} />}
 
@@ -305,11 +298,8 @@ const EditProduct = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {categories?.map((category: any) => (
-                        <SelectItem key={category.id} value={category.category_name}>
-                          {category.category_name}
-                        </SelectItem>
-                      ))}
+                      {memoizedCategories}
+
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -333,7 +323,7 @@ const EditProduct = () => {
                       <button
                         className=" rounded-full py-1 px-2 relative bottom-[123px] left-[89px] bg-red-500 text-white"
                         type="button"
-                        onClick={() => deleteImage(index, id)}
+                        onClick={() => deleteImage(index)}
                       >
                         <X size={15} />
                       </button>
@@ -369,7 +359,7 @@ const EditProduct = () => {
             )} />
 
 
-            <FormField control={form.control} name="product_tags" render={({ field }) => (
+            <FormField control={form.control} name="product_tags" render={() => (
               <FormItem>
                 <FormControl>
                   <div className="flex items-center gap-2">
@@ -426,7 +416,7 @@ const EditProduct = () => {
 
 
 
-            <FormField control={form.control} name="product_notes" render={({ field }) => (
+            <FormField control={form.control} name="product_notes" render={() => (
               <FormItem>
                 <FormControl>
                   <div className="flex items-center gap-2">
@@ -454,6 +444,7 @@ const EditProduct = () => {
 
                   </div>
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )} />
             <ul className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">

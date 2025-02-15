@@ -26,3 +26,8 @@ export const getAxiosErrorResponse = (error: any): string => {
    return ""
 }
 
+export const deleteItemFromArrayState = (state: any, item: any) => {
+   // remove item from the state array
+   state.filter((i) => i !== item)
+}
+

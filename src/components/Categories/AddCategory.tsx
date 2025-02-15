@@ -9,10 +9,8 @@ import { toast } from "sonner";
 import { TypographyH2 } from "../Typography/h2";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/button";
-
-interface Category {
-  category_name: string;
-}
+import { Loader2 } from "lucide-react";
+import { Category } from "@/interfaces/Category.Interface";
 
 const AddCategory = () => {
   const form = useForm<TAddCategorySchema>({
@@ -20,13 +18,8 @@ const AddCategory = () => {
     reValidateMode: "onChange",
   });
 
-  const handleValue = (e: any) => {
-    form.setValue(e.target.name, e.target.value)
-  }
-
-
-  const { mutate: MutateCategory } = useMutation({
-    mutationFn: (data) => categoriesApi.CreateCategory(data),
+  const { isPending: isCreatingCategory, mutate: MutateCategory } = useMutation({
+    mutationFn: (data: Category) => categoriesApi.CreateCategory(data),
     onMutate: async (data) => {
       const previousCategories = queryClient.getQueryData(['categories'])
 
@@ -36,12 +29,12 @@ const AddCategory = () => {
     },
     onSuccess: () => {
       toast.success("La categoria fue creada");
-      queryClient.refetchQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
     },
-    onError: (err: any, context: any) => {
-      toast.error(err.message);
+    onError: (err: any, _, context: any) => {
       queryClient.setQueryData(['categories'], context.previousCategories)
-      throw err;
+      toast.error(err.message);
+      throw Error(err.message);
     },
   });
 
@@ -53,7 +46,7 @@ const AddCategory = () => {
       }
       MutateCategory(category);
     } catch (error: any) {
-      toast.error(`Hubo un error al crear la categoria, ${error}`);
+      toast.error(`Hubo un error al crear la categoria, ${error.message}`);
     }
   };
   return (
@@ -81,9 +74,11 @@ const AddCategory = () => {
 
         <Button
           type="submit"
-          className="bg-black w-full text-white rounded-xl p-2"
+          className="bg-black w-full text-white rounded-xl p-2 flex gap-2 items-center"
         >
+
           Crear categoria
+          {isCreatingCategory && <Loader2 className="animate-spin" />}
         </Button>
       </form>
     </Form>
