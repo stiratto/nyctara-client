@@ -1,6 +1,6 @@
 import discountsApi from "@/api/discounts/discounts.api";
 import { Discount } from "@/interfaces/Discount.interface";
-import { applyDiscount, clearDiscountError } from "@/store/discounts/DiscountsSlice";
+import { applyDiscount, clearCurrentDiscountUsing, clearDiscountError } from "@/store/discounts/DiscountsSlice";
 import { AppDispatch, RootState } from "@/store/store";
 import { useMutation } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
@@ -8,12 +8,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { clearCart } from "@/store/cart/CartProductsSlice";
 
 const ApplyDiscount = () => {
     const [discount, setDiscount] = useState<string>("");
     const cartProducts = useSelector((state: RootState) => state.cart.products);
     const discountError = useSelector((state: RootState) => state.discounts.error)
     const dispatch = useDispatch<AppDispatch>();
+    const userIsUsingDiscount = useSelector((state: RootState) => state.discounts.current_discount_being_used)
 
     const { mutate: getDiscount, data: discountOnDb } = useMutation<Discount>({
         mutationFn: () => discountsApi.GetDiscountByName(discount),
@@ -39,7 +41,6 @@ const ApplyDiscount = () => {
 
     };
 
-
     useEffect(() => {
         if (discountError && discountError !== "") {
             toast.error(discountError)
@@ -51,23 +52,32 @@ const ApplyDiscount = () => {
         <div className="flex flex-col items-start">
             <form
                 onSubmit={handleApplyDiscount}
-                className="flex flex-wrap items-center space-x-4"
+                className="flex flex-col gap-2"
             >
-                <Input
-                    type="text"
-                    placeholder="Codigo"
-                    name="codigo"
-                    className="w-28 border bg-white"
-                    onChange={handleValue}
-                    disabled={cartProducts.length === 0}
-                />
+                {userIsUsingDiscount && <p className="text-gray-500 text-sm">Ya estas usando un descuento</p>}
+                <div className="flex flex-wrap items-center gap-4">
+                    <Input
+                        type="text"
+                        placeholder="Codigo"
+                        name="codigo"
+                        className="w-28 border bg-white"
+                        onChange={handleValue}
+                        disabled={cartProducts?.length === 0 || userIsUsingDiscount ? true : false}
+                        value={userIsUsingDiscount ? userIsUsingDiscount?.discount_name : ""}
+                    />
 
-                <Button
-                    type="submit"
-                    className="bg-black hover:bg-black/80 p-2 rounded-lg"
-                >
-                    Aplicar descuento
-                </Button>
+                    <Button
+                        type="submit"
+                        className="bg-black hover:bg-black/80 p-2 rounded-lg"
+                        disabled={cartProducts?.length === 0 || userIsUsingDiscount ? true : false}
+                    >
+                        Aplicar descuento
+                    </Button>
+
+                </div>
+
+
+
             </form>
         </div>
     );

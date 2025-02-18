@@ -4,11 +4,11 @@ import storage from "redux-persist/lib/storage";
 import cartProductsReducer from "./cart/CartProductsSlice";
 import discountsReducer from "./discounts/DiscountsSlice";
 import userAuthReducer from "./userAuth/userAuthSlice";
-import { changePriceIfUserUsingDiscount, checkIfUserAlreadyUsedDiscount } from "./middlewares.ts";
+import { changePriceApplyDiscount, changePriceIfUserUsingDiscount, checkIfUserAlreadyUsedDiscount } from "./middlewares.ts";
 
 export type AppThunk = ThunkAction<void, RootState, unknown, Action<string>>;
 
-const middlewares = [changePriceIfUserUsingDiscount, checkIfUserAlreadyUsedDiscount]
+const middlewares = [checkIfUserAlreadyUsedDiscount, changePriceIfUserUsingDiscount, changePriceApplyDiscount]
 
 const rootReducer = combineReducers({
   user: userAuthReducer,
@@ -24,7 +24,6 @@ const persistConfig = {
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-
 
 export const store = configureStore({
   reducer: persistedReducer,

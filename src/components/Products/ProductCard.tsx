@@ -40,7 +40,7 @@ export const ProductCard = ({
             <CardTitle className="group-hover:underline">{product_name}</CardTitle>
             <div className="space-x-4">
               {product_notes.map((n) => (
-                <Badge className="bg-[#D3DAAE] text-black">{n}</Badge>
+                <Badge key={n}className="bg-[#D3DAAE] text-black">{n}</Badge>
               ))}
             </div>
             <p className="font-bold">${formattedPrice}</p>

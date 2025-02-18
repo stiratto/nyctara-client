@@ -2,20 +2,17 @@ import productsApi from "@/api/products/products.api";
 import { addQuantity, removeProductFromCart, removeQuantity } from "@/store/cart/CartProductsSlice";
 import { AppDispatch, RootState } from "@/store/store";
 import { useQuery } from "@tanstack/react-query";
-import { Minus, Plus, Trash2 } from "lucide-react";
-import { useCallback } from "react";
+import { CircleDot, Dot, Minus, Plus, Trash2 } from "lucide-react";
+import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { TypographyP } from "../Typography/p";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
+import { IsAvailableBadge } from "../Products/IsAvailableBadge";
 
-const CartProduct = ({ product_name, product_price, id, product_quantity, product_description, product_notes, product_quality }: any) => {
+const CartProduct = ({ isAvailable, product_name, product_price, id, product_quantity, product_description, product_notes, product_quality, product_images }: any) => {
   const dispatch = useDispatch<AppDispatch>();
-
-  const { data: url } = useQuery({
-    queryKey: ["product-cart-image", id],
-    queryFn: () => productsApi.GetProductImage(id),
-  });
 
   const deleteProduct = (id: string) => {
     dispatch(removeProductFromCart({ id }));
@@ -40,7 +37,7 @@ const CartProduct = ({ product_name, product_price, id, product_quantity, produc
         <img
           loading="lazy"
           decoding="async"
-          src={url?.[0]}
+          src={product_images?.[0]}
           alt={product_name}
           width={128}
           height={128} // Indica el tamaño máximo que debe mostrarse
@@ -52,11 +49,13 @@ const CartProduct = ({ product_name, product_price, id, product_quantity, produc
         <div className="flex flex-col gap-4">
           <div>
             <h1 className="font-bold text-2xl">{product_name}</h1>
+            <IsAvailableBadge isAvailable={isAvailable} />
+
             <TypographyP className="max-w-xs text-ellipsis overflow-hidden">{product_description}</TypographyP>
           </div>
           <div className="flex gap-2">
             <p className="font-semibold">Notas:</p>
-            {product_notes.map((note: string, index: number) => <Badge key={index} className="w-min">{note}</Badge>)}
+            {product_notes?.map((note: string, index: number) => <Badge key={index} className="w-min">{note}</Badge>)}
           </div>
           <h1 className="font-semibold">
             Calidad: <span className="font-normal">{product_quality}</span>

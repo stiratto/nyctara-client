@@ -15,8 +15,25 @@ const cartProductsSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
+    updateCartProducts: (state, action: PayloadAction<{ products: Product[] }>) => {
+      try {
+        console.log(action.payload)
+        const updatedQuantities = action.payload.products.map((product) => {
+          const productWithId = state.products.find((p) => p.id === product.id) as Product
+          if (productWithId) {
+            return { ...product, product_quantity: productWithId.product_quantity }
+          }
+          return product
+        })
+        state.products = updatedQuantities
+      } catch (err: any) {
+        console.log(err)
+      }
+    },
+
     addProductToCart: (state, action: PayloadAction<{ product: Product, discountUserUsing: Discount }>) => {
-      const productExists = state.products.find(
+      console.log(state.products)
+      const productExists = state?.products?.find(
         (p) => p.id === action.payload.product.id,
       );
       const product = action.payload.product
@@ -50,26 +67,17 @@ const cartProductsSlice = createSlice({
         product.product_quantity += action.payload.quantity as any;
       }
     },
-    /*
-     * @param: discount_total: total amount to discount from products
-     * @return: nothing 
-     *
-     *
-     * */
+
     changeProductPrice: (
       state,
       action: PayloadAction<{
         discount_total: string;
-        userIsUsingDiscount: Discount;
       }>,
     ) => {
-      if (action.payload.userIsUsingDiscount) {
-        return;
-      } else {
-        state.products.map((product) => {
-          product.product_price %= parseInt(action.payload.discount_total);
-        });
-      }
+      state.products.map((product) => {
+        product.product_price -= Math.floor((product.product_price * parseInt(action.payload.discount_total)) / 100);
+
+      });
     },
     removeQuantity: (
       state,
@@ -92,6 +100,7 @@ export const {
   addQuantity,
   removeQuantity,
   changeProductPrice,
+  updateCartProducts,
   clearCart,
 } = cartProductsSlice.actions;
 

@@ -28,7 +28,7 @@ export const addToCart = async (
 
 export const getCartTotal = () => {
     const cartProducts = store.getState().cart.products;
-    return cartProducts.reduce((total: number, product: Product) => {
+    return cartProducts?.reduce((total: number, product: Product) => {
         return (
             total + (product?.product_quantity as number) * product.product_price
         );

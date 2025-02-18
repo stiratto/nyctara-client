@@ -10,7 +10,6 @@ import { NavLink as Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import productsApi from "../../api/products/products.api";
 import ProductsNotFound from "../NotFound/ProductsNotFound.tsx";
-import { TypographyH3 } from "../Typography/h3.tsx";
 import { TypographyP } from "../Typography/p.tsx";
 import { Badge } from "../ui/badge.tsx";
 import { Button } from "../ui/button.tsx";
@@ -21,6 +20,7 @@ import { LoaderCircle, ShoppingCart } from "lucide-react";
 import { Discount } from "@/interfaces/Discount.interface.ts";
 import clsx from "clsx";
 import { cn } from "@/lib/utils.ts";
+import { IsAvailableBadge } from "./IsAvailableBadge.tsx";
 
 const Product = () => {
   const { id } = useParams();
@@ -76,7 +76,6 @@ const Product = () => {
     addToCart(product, discountUserUsing);
   };
 
-
   return (
     <div className={cn("duration-600 flex  flex-col items-center justify-center pt-28 px-8 lg:px-24", productError && "h-screen")}>
       {productLoading && !productError && (
@@ -120,7 +119,7 @@ const Product = () => {
           <div className="flex flex-col gap-4 mt-8">
             <h1 className="font-extrabold text-5xl break-all max-w-sm">{product?.product_name}</h1>
             <p className="text-sm text-gray-500 "> {product?.product_tags.map((tag) => (
-              <Badge className="bg-transparent hover:bg-transparent text-gray-500 border-gray-400">{tag}</Badge>
+              <Badge key={tag} className="bg-transparent hover:bg-transparent text-gray-500 border-gray-400">{tag}</Badge>
             ))}</p>
             <div className="flex items-center justify-between">
               <TypographyP className="font-bold text-2xl">
@@ -138,6 +137,7 @@ const Product = () => {
             <Badge className="bg-transparent text-black border-gray-700 w-min hover:bg-transparent">
               {product?.product_category?.category_name}
             </Badge>
+            <IsAvailableBadge isAvailable={product.isAvailable} />
             <div>
               <h2 className="font-bold">Notas de fragancia</h2>
               <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  py-2">

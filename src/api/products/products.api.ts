@@ -17,6 +17,19 @@ async function GetAllProducts() {
   }
 }
 
+async function GetCartProducts(ids: string[]) {
+  try {
+    const response = await apiClient.get(`/products/cartProducts/${ids}`)
+    return response.data
+
+  } catch (error: any) {
+    const errorMessage = getAxiosErrorResponse(error)
+    throw new Error(errorMessage)
+  }
+
+}
+
+
 async function GetProductImage(id: string) {
   try {
     const response = await apiClient.get(`/products/cart/${id}`);
@@ -159,6 +172,7 @@ async function DeleteBulkProducts(products: string[]) {
 
 
 
+
 export default {
   EditProduct,
   DeleteProductImage,
@@ -171,4 +185,5 @@ export default {
   GetProductImage,
   SearchProducts,
   CreateProduct,
+  GetCartProducts
 };

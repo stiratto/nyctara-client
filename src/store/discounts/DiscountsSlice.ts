@@ -18,6 +18,7 @@ export const discountsSlice = createSlice({
   initialState,
   reducers: {
     applyDiscount: (state, action: PayloadAction<Discount>) => {
+      console.log(action)
       state.current_discount_being_used = action.payload
       state.discounts_user_already_used.push(action.payload)
     },
