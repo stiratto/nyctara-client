@@ -49,12 +49,12 @@ const Cart = () => {
 
   return (
     <Sheet onOpenChange={handleOpen}>
-      <SheetTrigger className="flex items-center gap-4">
+      <SheetTrigger className="flex items-center gap-4 cursor-pointer">
         <ShoppingCart size={20} />
       </SheetTrigger>
       <SheetContent
         side={"right"}
-        className="lg:rounded-t-2xl bg-[#ecefdc] flex flex-col justify-center w-full lg:max-w-2xl mx-auto"
+        className="lg:rounded-tl-2xl bg-[#ecefdc] flex flex-col justify-center w-full lg:max-w-2xl mx-auto"
       >
         <SheetTitle className="text-5xl self-start">Tu carrito</SheetTitle>
         <SheetDescription></SheetDescription>

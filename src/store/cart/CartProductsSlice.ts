@@ -17,7 +17,6 @@ const cartProductsSlice = createSlice({
   reducers: {
     updateCartProducts: (state, action: PayloadAction<{ products: Product[] }>) => {
       try {
-        console.log(action.payload)
         const updatedQuantities = action.payload.products.map((product) => {
           const productWithId = state.products.find((p) => p.id === product.id) as Product
           if (productWithId) {
@@ -42,10 +41,9 @@ const cartProductsSlice = createSlice({
       // hte product to cart
 
       if (productExists) {
-        productExists.product_quantity += 1 as any;
+        productExists.product_quantity += product.product_quantity as any;
         return
       }
-      product.product_quantity = 1
       state.products.push(product);
     },
     removeProductFromCart: (state, action: PayloadAction<{ id: string }>) => {

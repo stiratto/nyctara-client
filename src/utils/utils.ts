@@ -6,6 +6,8 @@
  *
  * */
 
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 import axios from "axios"
 
 export const getImagesPreview = (images: (string | File)[]) => {
@@ -26,8 +28,28 @@ export const getAxiosErrorResponse = (error: any): string => {
    return ""
 }
 
-export const deleteItemFromArrayState = (state: any, item: any) => {
+export const deleteItemFromArrayState = <T extends unknown>(arr: T[], item: number) => {
    // remove item from the state array
-   state.filter((i) => i !== item)
+   return arr.filter((_, i: any) => i !== item)
 }
+
+export const formatPrice = (price: number) => {
+
+   if (price) {
+      let parts = price?.toString().split(".");
+
+      if (parts) {
+
+         parts[0] = parts?.[0]?.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+         return parts?.join(",");
+      }
+
+
+   }
+}
+
+export function cn(...inputs: ClassValue[]) {
+   return twMerge(clsx(inputs));
+}
+
 

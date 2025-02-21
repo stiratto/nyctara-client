@@ -28,17 +28,16 @@ import {
 } from "@/components/ui/select";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { CloudUpload, X } from "lucide-react";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getImagesPreview } from "@/utils/utils";
+import { useFormActions } from "@/hooks/useFormActions";
 
 const AddProduct = () => {
   const [tempImagesUrl, setTempImagesUrl] = useState<string[]>([]);
-  const [tag, setTag] = useState<string>("");
-  const [note, setNote] = useState<string>("");
 
   const form = useForm<TAddProductSchema>({
     resolver: zodResolver(AddProductSchema),
@@ -48,6 +47,8 @@ const AddProduct = () => {
       product_images: [],
     },
   });
+
+  const { addItemToFormState, deleteItemFromFormState } = useFormActions(form)
 
   const productImages = form.getValues("product_images");
 
@@ -64,14 +65,6 @@ const AddProduct = () => {
   };
 
   const handleValue = (e: any) => {
-    if (e.target.name === "tag") {
-      setTag(e.target.value);
-      return;
-    } else if (e.target.name === "note") {
-      setNote(e.target.value);
-      return;
-    }
-
     form.setValue(e.target.name, e.target.value, { shouldValidate: true });
   };
 
@@ -90,13 +83,7 @@ const AddProduct = () => {
     setTempImagesUrl(objectUrls);
   };
 
-  const deleteItem = (
-    index: number,
-    state: "product_notes" | "product_tags"
-  ) => {
-    const newState = form.getValues(state).filter((_, i) => i !== index);
-    form.setValue(state, newState, { shouldValidate: true, shouldDirty: true });
-  };
+
 
   const { data: categories } = useQuery<Category[]>({
     queryKey: ["categories"],
@@ -155,6 +142,15 @@ const AddProduct = () => {
       throw new Error("Hubo un error" + err);
     }
   };
+
+  const memoizedCategories = useMemo(() => {
+    return categories?.map((category) => {
+      return <SelectItem
+        key={category.id}
+        value={category.category_name}
+      >{category.category_name}</SelectItem>
+    })
+  }, [categories])
 
   useEffect(() => {
     handleImagesPreview();
@@ -226,7 +222,7 @@ const AddProduct = () => {
             render={({ field }) => (
               <RadioGroup
                 onValueChange={field.onChange}
-                className="w-full flex items-center justify-center"
+                className="w-full flex flex-col"
               >
                 {Object.values(ProductQuality).map((item: any) => (
                   <FormItem key={item} className="flex items-center gap-2">
@@ -252,14 +248,7 @@ const AddProduct = () => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {categories?.map((category: any) => (
-                      <SelectItem
-                        key={category.id}
-                        value={category.category_name}
-                      >
-                        {category.category_name}
-                      </SelectItem>
-                    ))}
+                    {memoizedCategories}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -294,7 +283,7 @@ const AddProduct = () => {
                   ))
                 ) : (
                   <div>
-                    <p className="text-sm placeholder-gray-500">
+                    <p className="text-sm  text-gray-500">
                       Aquí se mostrarán las imagenes que selecciones...
                     </p>
                   </div>
@@ -346,21 +335,13 @@ const AddProduct = () => {
                         <Input
                           type="text"
                           placeholder="Etiqueta"
-                          value={tag}
                           name="tag"
                           onChange={handleValue}
                         />
                         <Button
                           type="button"
                           className="bg-black"
-                          onClick={() => {
-                            if (tag?.trim() === "") return;
-                            const newTags = [...field.value, tag] as string[]; // Agrega la nueva etiqueta
-                            form.setValue("product_tags", newTags, {
-                              shouldValidate: true,
-                            }); // Actualiza el formulario
-                            setTag("");
-                          }}
+                          onClick={() => addItemToFormState("product_tags", field)}
                         >
                           Añadir tag
                         </Button>
@@ -383,7 +364,7 @@ const AddProduct = () => {
                     <button
                       type="button"
                       className="bg-red-500 absolute -top-2 -right-2 z-50 w-fit p-1 rounded-full"
-                      onClick={() => deleteItem(index, "product_tags")}
+                      onClick={() => deleteItemFromFormState(index, "product_tags")}
                     >
                       <X size={12} color="white" />
                     </button>
@@ -403,7 +384,6 @@ const AddProduct = () => {
                         <Input
                           name="note"
                           type="text"
-                          value={note}
                           placeholder="Escribe una nota"
                           onChange={handleValue}
                         />
@@ -411,14 +391,7 @@ const AddProduct = () => {
                         <Button
                           type="button"
                           className="bg-black"
-                          onClick={() => {
-                            if (note?.trim() === "") return;
-                            let newNotes = [...field.value, note] as string[];
-                            form.setValue("product_notes", newNotes, {
-                              shouldValidate: true,
-                            });
-                            setNote("");
-                          }}
+                          onClick={() => addItemToFormState("product_notes", field)}
                         >
                           Añadir nota
                         </Button>
@@ -440,7 +413,7 @@ const AddProduct = () => {
                     <button
                       type="button"
                       className="bg-red-500 absolute -top-2 -right-2 z-50 w-fit p-1 rounded-full"
-                      onClick={() => deleteItem(index, "product_notes")}
+                      onClick={() => deleteItemFromFormState(index, "product_notes")}
                     >
                       <X size={12} color="white" />
                     </button>

@@ -9,7 +9,7 @@ import { EditProductSchema, TEditProductSchema } from "@/schemas/EditProductShem
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { CloudUpload, LoaderCircle, X } from "lucide-react";
-import { memo, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -18,6 +18,7 @@ import categoriesApi from "@/api/categories/categories.api";
 import { Badge } from "@/components/ui/badge";
 import { getImagesPreview } from "@/utils/utils";
 import { Category } from "@/interfaces/Category.Interface";
+import { useFormActions } from "@/hooks/useFormActions";
 
 const EditProduct = () => {
   const id = useParams().id as string;
@@ -33,6 +34,8 @@ const EditProduct = () => {
       note: ""
     }
   });
+
+  const { addItemToFormState, deleteItemFromFormState, handleImageChangeForm } = useFormActions(form)
 
   let [
     tag,
@@ -50,17 +53,9 @@ const EditProduct = () => {
 
   const [urls, setUrls] = useState<string[]>()
 
-  const deleteItem = (index: number, state: "product_tags" | "product_notes") => {
-    const stateVal = form.getValues(state)
-    const newState = stateVal.filter((_, i) => i !== index)
-    form.setValue(state, newState)
-  }
-
-
   const handleValue = (e: any) => {
     form.setValue(e.target.name, e.target.value, { shouldValidate: true })
   };
-
 
   const deleteImage = (index: number) => {
     // eliminar imagenes de product_images y updatear
@@ -78,7 +73,6 @@ const EditProduct = () => {
     const newImages = product_images.filter((_, i) => i !== index)
     form.setValue('product_images', newImages)
   }
-
 
   const { isLoading: isGettingProducts, data: product } = useQuery({
     queryKey: ["productToEdit", id],
@@ -123,39 +117,6 @@ const EditProduct = () => {
 
     setUrls(imageUrls)
   };
-
-  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    try {
-      const files = Array.from(e.target.files ?? []);
-      form.setValue('product_images', [...(product_images as File[]), ...files], { shouldDirty: true, shouldValidate: true });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    if (product) {
-      form.reset({
-        product_name: product?.product_name,
-        product_price: product?.product_price,
-        product_description: product?.product_description,
-        product_quality: product?.product_quality as any,
-        product_images: product?.product_images,
-        product_category: product?.product_category?.category_name,
-        product_tags: product?.product_tags,
-        product_notes: product?.product_notes,
-        tag: "",
-        note: "",
-      })
-    }
-
-  }, [product, form])
-
-  useEffect(() => {
-    if (Array.isArray(product_images) && product_images?.length > 0) {
-      handleImagesPreview();
-    }
-  }, [form.getValues('product_images')]);
 
   const onSubmit: SubmitHandler<TEditProductSchema> = async (data, e) => {
     e?.preventDefault();
@@ -202,6 +163,32 @@ const EditProduct = () => {
       }
     }
   };
+
+  useEffect(() => {
+    if (product) {
+      form.reset({
+        product_name: product?.product_name,
+        product_price: product?.product_price,
+        product_description: product?.product_description,
+        product_quality: product?.product_quality as any,
+        product_images: product?.product_images,
+        product_category: product?.product_category?.category_name,
+        product_tags: product?.product_tags,
+        product_notes: product?.product_notes,
+        tag: "",
+        note: "",
+      })
+    }
+
+  }, [product, form])
+
+  useEffect(() => {
+    if (Array.isArray(product_images) && product_images?.length > 0) {
+      handleImagesPreview();
+    }
+  }, [form.getValues('product_images')]);
+
+
 
 
 
@@ -321,7 +308,7 @@ const EditProduct = () => {
                     />
                     {product_images.length > 1 && (
                       <button
-                        className=" rounded-full py-1 px-2 relative bottom-[123px] left-[89px] bg-red-500 text-white"
+                        className=" rounded-full py-1 px-2 relative bottom-[123px] left-[89px] bg-red-500 text-white cursor-pointer"
                         type="button"
                         onClick={() => deleteImage(index)}
                       >
@@ -349,7 +336,7 @@ const EditProduct = () => {
                       type="file"
                       accept="image/*"
                       {...field}
-                      onChange={handleImage}
+                      onChange={handleImageChangeForm}
                       value=""
                     />
                   </FormControl>
@@ -359,7 +346,7 @@ const EditProduct = () => {
             )} />
 
 
-            <FormField control={form.control} name="product_tags" render={() => (
+            <FormField control={form.control} name="product_tags" render={({ field }) => (
               <FormItem>
                 <FormControl>
                   <div className="flex items-center gap-2">
@@ -374,13 +361,7 @@ const EditProduct = () => {
                     <Button
                       type="button"
                       className="bg-black"
-                      onClick={() => {
-                        let tagStr = tag as string
-                        if (tagStr?.trim() === "") return
-                        const newTags = [...(product_tags as string[]), tagStr] as string[]
-                        form.setValue('product_tags', newTags)
-                        form.setValue('tag', "")
-                      }}
+                      onClick={() => addItemToFormState("product_tags", field)}
                     >
                       Añadir tag
                     </Button>
@@ -402,8 +383,8 @@ const EditProduct = () => {
 
                   <button
                     type="button"
-                    className="bg-red-500 absolute -top-2 -right-2 z-50 w-fit p-1 rounded-full"
-                    onClick={() => deleteItem(index, "product_tags")}
+                    className="bg-red-500 absolute -top-2 -right-2 z-50 w-fit p-1 rounded-full cursor-pointer"
+                    onClick={() => deleteItemFromFormState(index, "product_tags")}
                   >
                     <X size={12} color="white" />
                   </button>
@@ -416,7 +397,7 @@ const EditProduct = () => {
 
 
 
-            <FormField control={form.control} name="product_notes" render={() => (
+            <FormField control={form.control} name="product_notes" render={({ field }) => (
               <FormItem>
                 <FormControl>
                   <div className="flex items-center gap-2">
@@ -425,18 +406,13 @@ const EditProduct = () => {
                       type="text"
                       placeholder="Notas del producto"
                       onChange={handleValue}
-                      value={note as string}
                     />
 
                     <Button
                       className="bg-black"
                       type="button"
                       onClick={() => {
-                        let noteStr = note as string
-                        if (noteStr?.trim() === "") return
-                        const newNotes = [...(product_notes as string[]), noteStr] as string[]
-                        form.setValue('product_notes', newNotes)
-                        form.setValue('note', "")
+                        addItemToFormState("product_notes", field)
                       }}
                     >
                       Añadir nota
@@ -458,20 +434,20 @@ const EditProduct = () => {
 
                     <button
                       type="button"
-                      className="bg-red-500 absolute -top-2 -right-2 z-50 w-fit p-1 rounded-full"
-                      onClick={() => deleteItem(index, "product_notes")}
+                      className="bg-red-500 absolute -top-2 -right-2 z-50 w-fit p-1 rounded-full cursor-pointer"
+                      onClick={() => deleteItemFromFormState(index, "product_notes")}
                     >
                       <X size={12} color="white" />
                     </button>
                   </Badge>
                 ))}
             </ul>
-            <button
+            <Button
               type="submit"
-              className="self-start border border-black p-2 w-full max-w-sm rounded-xl bg-black text-white"
+              className=" p-2 w-full bg-black text-white"
             >
               Editar producto
-            </button>
+            </Button>
           </form>
 
         </Form >
@@ -483,4 +459,4 @@ const EditProduct = () => {
   );
 };
 
-export default memo(EditProduct);
+export default EditProduct;

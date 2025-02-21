@@ -16,7 +16,7 @@ export const AvailableCoupon = () => {
             <p className="text-center text-sm truncate ">
                🎉 Utiliza el codigo
                <span className="bg-gray-700 p-1">{lastDiscount?.discount_name}</span>
-               y obten un {lastDiscount?.discount_total}% de descuento en todos los productos, valido hasta el {validUntilDate?.toLocaleDateString()}</p>
+               y obten un {lastDiscount?.discount_total}% OFF en todos los productos, valido hasta el {validUntilDate?.toLocaleDateString()}</p>
          </div>
       )}
 

@@ -19,7 +19,7 @@ const OtherProducts = (id: { id: string }) => {
   });
 
   return (
-    <div className="py-24 gap-8 flex flex-col justify-center items-center">
+    <div className="py-24 gap-8 flex flex-col justify-center items-center w-full">
       <TypographyH1>Otros productos</TypographyH1>
       {isLoading && <LoaderCircle />}
 

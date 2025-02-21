@@ -2,6 +2,7 @@ import { Product } from "@/interfaces/Product.Interface";
 import { NavLink as Link } from "react-router-dom";
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
+import { ExternalLink } from "lucide-react";
 
 export const ProductNotFoundCard = ({
   product_name,
@@ -12,12 +13,12 @@ export const ProductNotFoundCard = ({
   product_notes,
 }: Product) => {
   return (
-    <Link to={`/producto/${id}`} className="flex flex-col w-full">
-      <div className="flex flex-col break-words xs:flex-row items-center px-8 py-4 gap-8 grow ">
-        <img src={product_images?.[0] as string} className="w-24 " />
-        <div className="flex flex-col text-sm gap-1">
-          <h1 className="text-black text-lg">{product_name}</h1>
-          <p className="text-gray-700 max-w-xs truncate">{product_description}</p>
+    <Link to={`/producto/${id}`} className="flex flex-col w-full text-black hover:underline">
+      <div className="flex flex-col break-words xs:flex-row items-center px-8 py-4 gap-8">
+        <img src={product_images?.[0] as string} className="w-36 rounded" />
+        <div className="flex flex-col text-sm gap-1 ">
+          <h1 className="text-lg  text-blue-500 flex items-center gap-2">{product_name}<ExternalLink /></h1>
+          <p className="text-gray-500 max-w-xs truncate">{product_description}</p>
           <p className="font-bold text-lg">${product_price}</p>
           <div>
             {product_notes.map((note: string) => (
@@ -29,7 +30,7 @@ export const ProductNotFoundCard = ({
         </div>
       </div>
 
-      <Separator />
+      <Separator className="border-gray-500" />
     </Link>
   );
 };

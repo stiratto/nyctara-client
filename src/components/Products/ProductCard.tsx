@@ -5,6 +5,7 @@ import { NavLink as Link } from "react-router-dom";
 import { Badge } from "../ui/badge";
 
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import { formatPrice } from "@/utils/utils";
 
 export const ProductCard = ({
   product_name,
@@ -17,18 +18,6 @@ export const ProductCard = ({
   product_images,
   id,
 }: Product) => {
-  const [formattedPrice, setFormattedPrice] = React.useState("");
-
-  useEffect(() => {
-    const formattedPrice = product_price.toLocaleString("es-ES", {
-      style: "currency",
-      currency: "COP",
-    });
-    const result = formattedPrice.replace("COP", "").replace(",00", "").trim();
-    setFormattedPrice(result);
-  }, [product_price]);
-
-
   return (
     <Link to={`/producto/${id}`} className="flex flex-col p-0! rounded">
       <Card className="group relative  bg-transparent border-black/20">
@@ -40,10 +29,10 @@ export const ProductCard = ({
             <CardTitle className="group-hover:underline">{product_name}</CardTitle>
             <div className="space-x-4">
               {product_notes.map((n) => (
-                <Badge key={n}className="bg-[#D3DAAE] text-black">{n}</Badge>
+                <Badge key={n} className="bg-[#D3DAAE] text-black">{n}</Badge>
               ))}
             </div>
-            <p className="font-bold">${formattedPrice}</p>
+            <p className="font-bold">${formatPrice(product_price)}</p>
             <button className="opacity-0 group-hover:opacity-100 hover:bg-white/30 transition-all text-white bg-black/50 rounded-lg p-2 left-18 absolute top-[17rem] mx-auto font-semibold">Ver producto</button>
           </CardDescription>
 

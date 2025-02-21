@@ -16,21 +16,23 @@ import { Button } from "../ui/button.tsx";
 import { DeleteProductDialog } from "./DeleteProductDialog.tsx";
 import OtherProducts from "./OtherProducts.tsx";
 import ProductBreadcrumb from "./ProductBreadcrumb";
-import { LoaderCircle, ShoppingCart } from "lucide-react";
+import { Leaf, LoaderCircle, Minus, Plus, ShoppingCart } from "lucide-react";
 import { Discount } from "@/interfaces/Discount.interface.ts";
 import clsx from "clsx";
 import { cn } from "@/lib/utils.ts";
 import { IsAvailableBadge } from "./IsAvailableBadge.tsx";
+import { formatPrice } from "@/utils/utils.ts";
+import { TypographyH1 } from "../Typography/h1.tsx";
 
 const Product = () => {
   const { id } = useParams();
-  const [formattedPrice, setFormattedPrice] = useState("");
 
   const isAuthenticated = useSelector(
     (state: RootState) => state.user.authenticated,
   );
 
   const [currentImage, setCurrentImage] = useState<string | undefined>();
+  const [productQuantity, setProductQuantity] = useState<number>(1)
 
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
@@ -45,14 +47,6 @@ const Product = () => {
     queryFn: () => productsApi.GetProductById(id as string),
     enabled: !!id
   });
-
-  useEffect(() => {
-
-    const formattedPrice = new Intl.NumberFormat("es-ES").format(product?.product_price as number)
-      .replace("COP", "");
-
-    setFormattedPrice(formattedPrice as any);
-  }, [product?.product_price]);
 
   useEffect(() => {
 
@@ -73,7 +67,7 @@ const Product = () => {
       : [];
 
   const handleAddToCart = (product: ProductProps) => {
-    addToCart(product, discountUserUsing);
+    addToCart({ ...product, product_quantity: productQuantity }, discountUserUsing);
   };
 
   return (
@@ -102,9 +96,9 @@ const Product = () => {
                     key={uuidv4()}
                     alt="Imagen del producto"
                     src={image?.src}
-                    className={clsx(`w-[90px] h-[90px] cursor-pointer border-2 border-transparent object-cover rounded-full hover:border-gray-500`,
+                    className={clsx(`w-[90px] h-[90px] cursor-pointer border-2 border-transparent object-cover hover:border-gray-500`,
                       // check if current image is the one selected
-                      index === currentIndex && "border-black!"
+                      index === currentIndex && "!border-gray-300"
                     )}
                     onClick={() => (
                       setCurrentImage(image?.src), setCurrentIndex(index)
@@ -117,13 +111,18 @@ const Product = () => {
             </div>
           </div>
           <div className="flex flex-col gap-4 mt-8">
-            <h1 className="font-extrabold text-5xl break-all max-w-sm">{product?.product_name}</h1>
-            <p className="text-sm text-gray-500 "> {product?.product_tags.map((tag) => (
-              <Badge key={tag} className="bg-transparent hover:bg-transparent text-gray-500 border-gray-400">{tag}</Badge>
-            ))}</p>
+            <IsAvailableBadge isAvailable={product.isAvailable} />
+
+            <TypographyH1 className="font-extrabold text-5xl max-w-sm">{product?.product_name}</TypographyH1>
+            <div className="flex flex-wrap items-center gap-2">
+
+              {product?.product_tags.map((tag) => (
+                <Badge key={tag} className="bg-transparent hover:bg-transparent text-gray-500 border-gray-400">{tag}</Badge>
+              ))}
+            </div>
             <div className="flex items-center justify-between">
               <TypographyP className="font-bold text-2xl">
-                ${formattedPrice}
+                ${formatPrice(product.product_price)}
               </TypographyP>
 
               <Badge className="font-normal">
@@ -137,24 +136,33 @@ const Product = () => {
             <Badge className="bg-transparent text-black border-gray-700 w-min hover:bg-transparent">
               {product?.product_category?.category_name}
             </Badge>
-            <IsAvailableBadge isAvailable={product.isAvailable} />
             <div>
-              <h2 className="font-bold">Notas de fragancia</h2>
+              <h2 className="font-bold flex items-center gap-2">Notas de fragancia<Leaf /></h2>
               <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  py-2">
                 {product?.product_notes?.map((note: string) => <li key={uuidv4()}>{note}</li>)}
               </ul>
             </div>
 
-            <Button
-              className="flex gap-2 items-center w-min bg-black text-white"
-              variant={"outline"}
-              type="button"
-              onClick={() => handleAddToCart(product as ProductProps)}
-            >
-              Añadir al carrito
-              <ShoppingCart size={20} />
-            </Button>
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <div className="flex items-center gap-16  p-4 border border-gray-500 rounded-full text-gray-700">
+                <Plus size={20} className="hover:cursor-pointer" onClick={() => setProductQuantity(productQuantity + 1)} />
+                <p className="text-black">{productQuantity}</p>
+                <button disabled={productQuantity === 1} className="cursor-pointer">
+                  <Minus size={20} onClick={() => setProductQuantity(productQuantity - 1)} />
+                </button>
+              </div>
 
+
+              <Button
+                className="flex gap-2 items-center bg-green-500 w-min text-white rounded-full p-7 uppercase text-sm"
+                type="button"
+                onClick={() => handleAddToCart(product as ProductProps)}
+              >
+                Añadir al carrito
+                <ShoppingCart size={20} />
+              </Button>
+
+            </div>
 
             <div className="flex flex-col md:flex-row gap-8 items-center ">
               {isAuthenticated && <DeleteProductDialog id={product.id as string} />}

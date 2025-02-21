@@ -63,7 +63,7 @@ const ApplyDiscount = () => {
                         className="w-28 border bg-white"
                         onChange={handleValue}
                         disabled={cartProducts?.length === 0 || userIsUsingDiscount ? true : false}
-                        value={userIsUsingDiscount ? userIsUsingDiscount?.discount_name : ""}
+                        value={userIsUsingDiscount ? userIsUsingDiscount?.discount_name : discount}
                     />
 
                     <Button

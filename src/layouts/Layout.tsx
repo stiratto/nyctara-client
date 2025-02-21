@@ -3,12 +3,12 @@ import { ErrorBoundary } from "react-error-boundary";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Outlet } from "react-router-dom";
 import { ScrollRestoration } from "react-router-dom";
-import { Navbar } from "../components/Navbar/FloatingNav.tsx";
+import { Navbar } from "../components/Navbar/Navbar.tsx";
 import { FloatingWhatsapp } from "../components/Other/FloatingWhatsapp.tsx";
 import Footer from "../pages/Footer.tsx";
 import { Suspense } from "react";
 import LoadingPage from "@/components/Other/LoadingPage.tsx";
-import { ErrorFallback} from "@/components/Other/ErrorFallback.tsx";
+import { ErrorFallback } from "@/components/Other/ErrorFallback.tsx";
 
 const Layout = () => {
 

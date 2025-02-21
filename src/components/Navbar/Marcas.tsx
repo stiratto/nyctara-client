@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import Input from "../Other/Input.tsx";
+import { cn } from "@/utils/utils.ts";
 
 export function Marcas() {
   const userData = useSelector((state: RootState) => state.user.authenticated);
@@ -56,58 +57,59 @@ export function Marcas() {
         onClick={reveal}
       >
       </button>
-      {show && (
-        <div className="fixed inset-0 z-800">
-          <div className="absolute inset-0 bg-black/70 " onClick={reveal}></div>
-          <div className="bg-white rounded-xl p-8 h-fit flex flex-col justify-between  z-1000 absolute top-0 left-4 mx-2 sm:mx-16 sm:w-96 w-auto mt-14">
-            <ul className="flex flex-col gap-4 my-8">
-              <div className="flex gap-2 items-center relative">
-                <Input
-                  name="category"
-                  placeholder="Buscar categoria"
-                  type="text"
-                  value={searchTerm}
-                  className="rounded-none"
-                  onChange={handleInputChange}
-                />
-                <Search size={17} className="relative right-8" />
-              </div>
-              <h1 className="font-bold text-4xl ">Marcas</h1>
+      <div className={cn("transition-opacity", show ? "opacity-100 " : "opacity-0 pointer-events-none")}>
+        {/* dark background */}
+        <div className={cn("absolute inset-0 bg-black/70 w-full h-screen")} onClick={reveal}></div>
+        <div className={cn(
+          "bg-white rounded-xl p-8 h-fit flex flex-col justify-between  z-1000 absolute top-0 left-4 mx-2 sm:mx-16 sm:w-96 w-auto mt-14",
+        )}>
+          <ul className="flex flex-col gap-4 my-8">
+            <div className="flex gap-2 items-center relative">
+              <Input
+                name="category"
+                placeholder="Buscar categoria"
+                type="text"
+                value={searchTerm}
+                className="rounded-none"
+                onChange={handleInputChange}
+              />
+              <Search size={17} className="relative right-8" />
+            </div>
+            <h1 className="font-bold text-4xl ">Marcas</h1>
 
-              <div className="flex flex-col gap-4 max-h-64 px-4 overflow-y-scroll">
-                {isLoading && <LoaderCircle className="animate-spin" />}
-                {!isLoading && isError && <p className="text-red-500 font-bold">Ocurrio un error</p>}
-                {!isLoading
-                  && !isError
-                  && filteredCategories
-                  && filteredCategories?.map((category: Category) => (
+            <div className="flex flex-col gap-4 max-h-64 px-4 overflow-y-scroll">
+              {isLoading && <LoaderCircle className="animate-spin" />}
+              {!isLoading && isError && <p className="text-red-500 font-bold">Ocurrio un error</p>}
+              {!isLoading
+                && !isError
+                && filteredCategories
+                && filteredCategories?.map((category: Category) => (
 
-                    <NavLink
-                      key={category.id}
-                      to={`/categoria/${category.id}`}
-                      className="border-b border-black"
-                    >
-                      {category.category_name}
-                    </NavLink>
-                  ))}
+                  <NavLink
+                    key={category.id}
+                    to={`/categoria/${category.id}`}
+                    className="border-b border-black"
+                  >
+                    {category.category_name}
+                  </NavLink>
+                ))}
+            </div>
+          </ul>
+          {userData
+            ? (
+              <div className="flex gap-4 text-sm border-t pt-8">
+                <button onClick={handleLogOut} >
+                  <LogOut />
+                </button>
+                <Link to="/admin/admin-panel" >
+                  <ShieldHalf />
+                </Link>
               </div>
-            </ul>
-            {userData
-              ? (
-                <div className="flex gap-4 text-sm border-t pt-8">
-                  <button onClick={handleLogOut} >
-                    <LogOut />
-                  </button>
-                  <Link to="/admin/admin-panel" >
-                    <ShieldHalf />
-                  </Link>
-                </div>
-              )
-              : <></>}
-          </div>
+            )
+            : <></>}
         </div>
-      )}
-    </div>
+      </div>
+    </div >
   );
 }
 

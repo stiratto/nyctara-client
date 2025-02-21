@@ -54,6 +54,9 @@ export function AddDiscountForm() {
       // be accesible
       return { previousDiscounts }
     },
+    onSuccess: () => {
+      toast.success("Descuento creado con exito")
+    },
     onError: (error, _, context) => {
       toast.error(`Hubo un error al crear el descuento: ${error.message}`);
       queryClient.setQueryData(["discounts"], context?.previousDiscounts);

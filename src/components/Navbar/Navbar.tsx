@@ -2,7 +2,7 @@
 import { cn } from "../../lib/utils";
 import { Marcas } from "./Marcas";
 import Cart from "@/components/Cart/Cart";
-import { SearchBar } from "./SearchBar";
+import { NavbarSearchProducts } from "./Search/NavbarSearchProduct";
 import { NavLink as Link } from "react-router-dom";
 import { AvailableCoupon } from "./AvailableDiscount";
 
@@ -30,9 +30,9 @@ export const Navbar = () => {
 
         <ul className="flex items-center justify-center gap-8">
           <li className="flex items-center gap-2 text-sm">
-            <SearchBar />
+            <NavbarSearchProducts />
           </li>
-          <li className="flex items-center gap-2 text-sm hover:scale-110 duration-300 ">
+          <li className="flex items-center gap-2 text-sm hover:scale-110 duration-300 cursor-pointer">
             <Cart />
           </li>
         </ul>

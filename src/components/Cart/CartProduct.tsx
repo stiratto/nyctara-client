@@ -1,18 +1,21 @@
-import productsApi from "@/api/products/products.api";
 import { addQuantity, removeProductFromCart, removeQuantity } from "@/store/cart/CartProductsSlice";
 import { AppDispatch, RootState } from "@/store/store";
-import { useQuery } from "@tanstack/react-query";
-import { CircleDot, Dot, Minus, Plus, Trash2 } from "lucide-react";
-import { useCallback, useEffect } from "react";
+import { Minus, Plus, Trash2 } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { TypographyP } from "../Typography/p";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { cn } from "@/lib/utils";
 import { IsAvailableBadge } from "../Products/IsAvailableBadge";
+import { formatPrice } from "@/utils/utils";
 
 const CartProduct = ({ isAvailable, product_name, product_price, id, product_quantity, product_description, product_notes, product_quality, product_images }: any) => {
   const dispatch = useDispatch<AppDispatch>();
+  const [priceDiscounted, setPriceDiscounted] = useState<number>(0)
+
+  useEffect(() => {
+    setPriceDiscounted((product_price / (1 - parseInt(current_discount_being_used?.discount_total as string) / 100)) - product_price)
+  }, [])
 
   const deleteProduct = (id: string) => {
     dispatch(removeProductFromCart({ id }));
@@ -32,46 +35,42 @@ const CartProduct = ({ isAvailable, product_name, product_price, id, product_qua
   );
 
   return (
-    <div className="flex flex-col md:flex-row items-center text-lg border-b border-b-black/20 pb-4 gap-4">
-      <div className="flex items-center gap-5 ">
-        <img
-          loading="lazy"
-          decoding="async"
-          src={product_images?.[0]}
-          alt={product_name}
-          width={128}
-          height={128} // Indica el tamaño máximo que debe mostrarse
-          className="rounded-xl object-contain"
-        />
-      </div>
+    <div className="flex flex-col lg:flex-row items-center text-lg border-b border-b-black/20 pb-4 gap-4">
+      <img
+        loading="lazy"
+        decoding="async"
+        src={product_images?.[0]}
+        alt={product_name}
+        width={128}
+        className="self-start md:self-center rounded-xl object-contain h-full"
+      />
 
-      <div className="flex flex-col md:flex-row justify-between items-center w-full text-sm">
+      <div className="flex flex-col md:flex-row justify-start items-start md:justify-between md:items-center w-full text-sm">
         <div className="flex flex-col gap-4">
           <div>
             <h1 className="font-bold text-2xl">{product_name}</h1>
             <IsAvailableBadge isAvailable={isAvailable} />
 
-            <TypographyP className="max-w-xs text-ellipsis overflow-hidden">{product_description}</TypographyP>
           </div>
           <div className="flex gap-2">
             <p className="font-semibold">Notas:</p>
-            {product_notes?.map((note: string, index: number) => <Badge key={index} className="w-min">{note}</Badge>)}
+            {product_notes?.map((note: string, index: number) => <Badge key={index} className="w-min bg-transparent border border-gray-500 text-black hover:bg-transparent">{note}</Badge>)}
           </div>
           <h1 className="font-semibold">
             Calidad: <span className="font-normal">{product_quality}</span>
           </h1>
         </div>
 
-        <div className="flex flex-col text-end gap-4">
+        <div className="flex flex-col gap-4">
           <div>
-            <h1 className="font-bold text-lg">${product_price}</h1>
+            <h1 className="font-bold text-lg">${formatPrice(product_price)}</h1>
 
             {current_discount_being_used && (
-              <p className="line-through text-gray-500">${current_discount_being_used.discount_total}</p>
+              <p className="line-through text-gray-500">${priceDiscounted}</p>
             )}
           </div>
-          <div className="flex flex-col gap-2">
-            <div className="flex flex-wrap gap-4 items-center">
+          <div className="flex flex-col !justify-start !items-start gap-2 ">
+            <div className="flex gap-4 items-center">
               <Button
                 disabled={product_quantity === 1}
                 onClick={() => removeProductQuantity(id)}
