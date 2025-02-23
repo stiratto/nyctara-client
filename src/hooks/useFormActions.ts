@@ -1,5 +1,4 @@
 import { ControllerRenderProps, UseFormReturn } from "react-hook-form";
-import { deleteItemFromArrayState } from "../utils/utils.ts";
 import { TAddProductSchema } from "@/schemas/AddProductSchema.tsx";
 import { TEditProductSchema } from "@/schemas/EditProductShema.ts";
 
@@ -21,13 +20,11 @@ export const useFormActions = (form: UseFormReturn<TAddProductSchema | TEditProd
 
    const deleteItemFromFormState = (
       index: number,
-      state: "product_notes" | "product_tags"
+      state: "product_notes" | "product_tags" | "product_images"
    ) => {
-      console.log(form.getValues(state))
-      const newState = deleteItemFromArrayState(form.getValues(state), index)
+      const newState = form.getValues(state).filter((_, i) => i !== index)
       form.setValue(state, newState, { shouldValidate: true });
    };
-
 
    const handleImageChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
       try {
@@ -37,8 +34,25 @@ export const useFormActions = (form: UseFormReturn<TAddProductSchema | TEditProd
             "product_images",
          ]);
 
-         const files = Array.from(e.target.files ?? []);
-         form.setValue('product_images', [...(product_images as File[]), ...files], { shouldDirty: true, shouldValidate: true });
+         if (e && e.target.files) {
+            const files = Array.from(e.target.files);
+            form.setValue(
+               'product_images',
+               [...(product_images as File[]), ...files],
+               { shouldValidate: true }
+            );
+         }
+
+      } catch (err) {
+         console.log(err);
+      }
+   };
+
+   const removeImageFromForm = (index: number, arrayFormName: any) => {
+      try {
+         const prevImages = form.getValues(arrayFormName);
+         const updatedImages = prevImages.filter((_: any, i: number) => i !== index);
+         form.setValue(arrayFormName, updatedImages, { shouldValidate: true });
       } catch (err) {
          console.log(err);
       }
@@ -47,7 +61,8 @@ export const useFormActions = (form: UseFormReturn<TAddProductSchema | TEditProd
    return {
       addItemToFormState,
       deleteItemFromFormState,
-      handleImageChangeForm
+      handleImageChangeForm,
+      removeImageFromForm
    }
 }
 

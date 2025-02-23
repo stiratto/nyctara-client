@@ -2,9 +2,9 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "../App.tsx";
 import { lazy } from "react";
 import Layout from "../layouts/Layout.tsx"
+import { FilteringDrawerContextProvider } from "@/contexts/FilteringDrawerContext.tsx";
 const Login = lazy(() => import('../pages/Login.tsx'))
 const PageNotFound = lazy(() => import('../components/NotFound/PageNotFound.tsx'))
-const InfoPage = lazy(() => import('../pages/InfoPage.tsx'))
 const AddUpdateCategory = lazy(() => import('@/components/Categories/AddUpdateCategory.tsx'))
 const Product = lazy(() => import('../components/Products/Product.tsx'))
 const ProductsAdminPanel = lazy(() => import('../components/Products/Admin/ProductAdminPanel.tsx'))
@@ -27,17 +27,15 @@ const router = createBrowserRouter([
         element: <App />,
       },
       {
-        path: "/info",
-        element: <InfoPage />,
-      },
-      {
         path: "/login",
         // path="/s/v/n/p/u/whyhsvnblhy/svnblhukv"
         element: <Login />,
       },
       {
         path: "/categoria/:id",
-        element: <CategoryProducts />,
+        element: <FilteringDrawerContextProvider>
+          <CategoryProducts />
+        </FilteringDrawerContextProvider>,
       },
       {
         path: "/producto/:id",
@@ -46,10 +44,6 @@ const router = createBrowserRouter([
       {
         path: "/carrito",
         element: <Cart />,
-      },
-      {
-        path: "/producto/:id",
-        element: <Product />,
       },
       {
         path: "/busqueda/",

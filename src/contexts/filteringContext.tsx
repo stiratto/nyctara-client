@@ -15,7 +15,7 @@ type FilteringProviderProps = {
 
 export type FiltersStateType = {
    price: string,
-   availability: "available" | "unavailable",
+   availability: "true" | "false",
    notes: string[],
    time: "newest" | "oldest"
 }
@@ -47,17 +47,23 @@ const FilteringProviderContext = createContext<FilteringProviderState>(null)
 
 export const FilteringProvider = ({ children }: FilteringProviderProps) => {
    const [filters, setFilters] = useState<FiltersStateType>({} as any)
-   const [params, setParams] = useState<string>("http://localhost:4000/api/products/filter-products")
+   const [params, setParams] = useState<string>("")
 
    useEffect(() => {
+      // loop through filters entries
+      const urlParams = new URLSearchParams()
       for (let [k, v] of Object.entries(filters)) {
-         const urlParams = new URLSearchParams()
+
+         // if the value is an array, join the elements in a single
+         // str separated by comma
          if (Array.isArray(v)) {
             v = v.join(",")
          }
          urlParams.append(k, v)
-         setParams(urlParams.toString())
       }
+
+      setParams(urlParams.toString())
+      console.log("params at context:", urlParams.toString())
 
    }, [filters])
 
@@ -87,7 +93,6 @@ export const useFiltering = () => {
    if (!context) {
       throw new Error("useFiltering debe ser usado dentro de un FilteringProvider")
    }
-
 
    return context
 }

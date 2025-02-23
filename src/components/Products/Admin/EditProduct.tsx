@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { getImagesPreview } from "@/utils/utils";
 import { Category } from "@/interfaces/Category.Interface";
 import { useFormActions } from "@/hooks/useFormActions";
+import queryClient from "@/main";
 
 const EditProduct = () => {
   const id = useParams().id as string;
@@ -37,19 +38,9 @@ const EditProduct = () => {
 
   const { addItemToFormState, deleteItemFromFormState, handleImageChangeForm } = useFormActions(form)
 
-  let [
-    tag,
-    note,
-    product_tags,
-    product_notes,
-    product_images,
-  ] = form.watch([
-    "tag",
-    "note",
-    "product_tags",
-    "product_notes",
-    "product_images",
-  ]);
+  let product_tags = form.getValues("product_tags")
+  let product_notes = form.getValues("product_notes")
+  let product_images = form.getValues("product_images")
 
   const [urls, setUrls] = useState<string[]>()
 
@@ -68,29 +59,24 @@ const EditProduct = () => {
       const regex = /\/([^/]+\.webp)/
       const match = imageToDelete.match(regex)
       const filename = match?.[1] as string
-      mutation.mutate({ id, image: filename })
+      deleteImageFromProduct({ id, image: filename })
     }
     const newImages = product_images.filter((_, i) => i !== index)
     form.setValue('product_images', newImages)
   }
 
-  const { isLoading: isGettingProducts, data: product } = useQuery({
+  const { isLoading: isGettingProduct, data: product } = useQuery({
     queryKey: ["productToEdit", id],
     queryFn: () => productsApi.GetProductById(id as string)
-  });
-
-  const deleteImageFromProduct = ({ id, image }: { id: string, image: string }) => {
-    return productsApi.DeleteProductImage(id, image)
-  }
-
-  const mutation = useMutation({
-    mutationFn: deleteImageFromProduct
   });
 
   const { data: categories } = useQuery<Category[]>({
     queryKey: ["categories", id],
     queryFn: () => categoriesApi.GetAllCategories()
+  });
 
+  const { mutate: deleteImageFromProduct } = useMutation({
+    mutationFn: ({ id, image }: { id: string, image: string }) => productsApi.DeleteProductImage(id, image)
   });
 
   const memoizedCategories = useMemo(() => {
@@ -99,22 +85,22 @@ const EditProduct = () => {
     ))
   }, [categories])
 
-  const { mutate: editProduct } = useMutation({
+  const { isPending: isEditingProduct, mutate: editProduct } = useMutation({
     mutationFn: (data: FormData) => productsApi.EditProduct(product?.id as string, data),
+    onMutate: () => {
+      toast.info("Editando producto...")
+    },
     onSuccess: () => {
+      queryClient.refetchQueries({ queryKey: ['main-product'] })
       toast.success("Producto editado con exito, redireccionando...", { duration: 5000 })
       setTimeout(() => {
         navigate(`/producto/${id}`);
-        window.location.reload()
       }, 5000)
     }
   })
 
   const handleImagesPreview = () => {
-    const images = form.getValues("product_images")
-    const imageUrls = getImagesPreview(images)
-
-
+    const imageUrls = getImagesPreview(product_images)
     setUrls(imageUrls)
   };
 
@@ -188,20 +174,16 @@ const EditProduct = () => {
     }
   }, [form.getValues('product_images')]);
 
-
-
-
-
   return (
     <div
-      className={`flex flex-col items-center justify-center w-full max-w-xl mx-auto  py-[9em]`}
+      className={`flex flex-col items-center justify-center w-full mx-auto  py-[9em]`}
     >
-      {isGettingProducts && <LoaderCircle className="h-screen animate-spin" size={40} />}
+      {isGettingProduct && <LoaderCircle className="h-screen animate-spin" size={40} />}
 
 
-      {!isGettingProducts && (
+      {!isGettingProduct && (
         <Form {...form}>
-          <form className="flex flex-col gap-4" onSubmit={form.handleSubmit(onSubmit)}>
+          <form className="flex flex-col gap-4 w-full max-w-3xl" onSubmit={form.handleSubmit(onSubmit)}>
             <FormField control={form.control} name="product_name" render={({ field }) => (
               <FormItem>
                 <FormControl>
@@ -308,7 +290,8 @@ const EditProduct = () => {
                     />
                     {product_images.length > 1 && (
                       <button
-                        className=" rounded-full py-1 px-2 relative bottom-[123px] left-[89px] bg-red-500 text-white cursor-pointer"
+                        className="rounded-lg py-1 px-1 relative bottom-[123px] left-[100px] hover:bg-red-300 bg-red-500 text-white cursor-pointer"
+
                         type="button"
                         onClick={() => deleteImage(index)}
                       >
@@ -331,7 +314,7 @@ const EditProduct = () => {
                     <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
                   </div>
                   <FormControl>
-                    <input
+                    <Input
                       hidden
                       type="file"
                       accept="image/*"
@@ -445,6 +428,7 @@ const EditProduct = () => {
             <Button
               type="submit"
               className=" p-2 w-full bg-black text-white"
+              disabled={isEditingProduct}
             >
               Editar producto
             </Button>

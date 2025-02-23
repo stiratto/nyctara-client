@@ -37,8 +37,7 @@ import { getImagesPreview } from "@/utils/utils";
 import { useFormActions } from "@/hooks/useFormActions";
 
 const AddProduct = () => {
-  const [tempImagesUrl, setTempImagesUrl] = useState<string[]>([]);
-
+  const [tempImagesUrls, setTempImagesUrls] = useState<string[]>([])
   const form = useForm<TAddProductSchema>({
     resolver: zodResolver(AddProductSchema),
     defaultValues: {
@@ -48,42 +47,17 @@ const AddProduct = () => {
     },
   });
 
-  const { addItemToFormState, deleteItemFromFormState } = useFormActions(form)
+  const product_notes = form.getValues("product_notes")
+  const product_images = form.getValues("product_images")
+  const product_tags = form.getValues("product_tags")
 
-  const productImages = form.getValues("product_images");
 
-  const removeImage = (index: number) => {
-    try {
-      const prevImages = form.getValues("product_images");
-      const updatedImages = prevImages.filter((_, i) => i !== index);
-      form.setValue("product_images", updatedImages, { shouldValidate: true });
-      const filteredImagesUrl = tempImagesUrl.filter((_, i) => i !== index);
-      setTempImagesUrl(filteredImagesUrl);
-    } catch (err) {
-      console.log(err);
-    }
+  const { addItemToFormState, deleteItemFromFormState, handleImageChangeForm } = useFormActions(form);
+
+
+  const handleValue = (e: ChangeEvent<HTMLInputElement>) => {
+    form.setValue(e.target.name as keyof TAddProductSchema, e.target.value, { shouldValidate: true });
   };
-
-  const handleValue = (e: any) => {
-    form.setValue(e.target.name, e.target.value, { shouldValidate: true });
-  };
-
-  const handleImage = (e: ChangeEvent<HTMLInputElement>) => {
-    try {
-      const prevImages = form.getValues("product_images");
-      const files = [...prevImages, e?.target?.files?.[0]] as any;
-      form.setValue("product_images", files, { shouldValidate: true });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleImagesPreview = () => {
-    const objectUrls = getImagesPreview(productImages);
-    setTempImagesUrl(objectUrls);
-  };
-
-
 
   const { data: categories } = useQuery<Category[]>({
     queryKey: ["categories"],
@@ -91,7 +65,8 @@ const AddProduct = () => {
     retry: 3,
   });
 
-  const { mutate: createProduct } = useMutation({
+
+  const { isPending: isCreatingProduct, mutate: createProduct } = useMutation({
     mutationFn: (data: any) => productsApi.CreateProduct(data),
     onMutate: () => {
       queryClient.invalidateQueries({ queryKey: ["category-products"] });
@@ -108,11 +83,12 @@ const AddProduct = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<TAddProductSchema> = async (data, e: any) => {
-    e.preventDefault();
+  const onSubmit: SubmitHandler<TAddProductSchema> = (data, e) => {
+    e?.preventDefault();
     try {
       toast.success("Agregando producto...");
       const formData = new FormData();
+
       formData.append("product_name", data.product_name);
       formData.append("product_price", data.product_price.toString());
       formData.append("product_description", data.product_description);
@@ -143,18 +119,24 @@ const AddProduct = () => {
     }
   };
 
+  // Memoize the categories to avoid unnecesary re-renders when
+  // interacting with the form inputs
   const memoizedCategories = useMemo(() => {
     return categories?.map((category) => {
-      return <SelectItem
-        key={category.id}
-        value={category.category_name}
-      >{category.category_name}</SelectItem>
-    })
-  }, [categories])
+      return (
+        <SelectItem key={category.id} value={category.category_name}>
+          {category.category_name}
+        </SelectItem>
+      );
+    });
+  }, [categories]);
 
+  // Each time product_images in the form changes, we get the URL of
+  // each image to display the preview
   useEffect(() => {
-    handleImagesPreview();
-  }, [productImages]);
+    const newImages = getImagesPreview(product_images)
+    setTempImagesUrls(newImages)
+  }, [product_images]);
 
   return (
     <section className="flex flex-col   items-center justify-center py-24 px-4">
@@ -247,9 +229,7 @@ const AddProduct = () => {
                       <SelectValue placeholder="Selecciona una categoria" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
-                    {memoizedCategories}
-                  </SelectContent>
+                  <SelectContent>{memoizedCategories}</SelectContent>
                 </Select>
                 <FormMessage />
               </FormItem>
@@ -262,10 +242,9 @@ const AddProduct = () => {
                 Imagenes del producto
               </label>
               <div className="flex gap-4">
-                {form.getValues("product_images") &&
-                  form.getValues("product_images").length > 0 ? (
-                  tempImagesUrl.length >= 1 &&
-                  tempImagesUrl.map((imageUrl: any, index: any) => (
+                {product_images?.length > 0 ? (
+                  tempImagesUrls?.length >= 1 &&
+                  tempImagesUrls?.map((imageUrl: any, index: any) => (
                     <div key={index}>
                       <img
                         src={imageUrl as string}
@@ -275,7 +254,7 @@ const AddProduct = () => {
                       <button
                         className="bg-red-500 text-white p-1 rounded-full relative bottom-32 left-24"
                         type="button"
-                        onClick={() => removeImage(index)}
+                        onClick={() => deleteItemFromFormState(index, "product_images")}
                       >
                         <X size={15} />
                       </button>
@@ -312,7 +291,7 @@ const AddProduct = () => {
                         type="file"
                         accept="image/*"
                         {...field}
-                        onChange={handleImage}
+                        onChange={handleImageChangeForm}
                         value=""
                       />
                     </FormControl>
@@ -341,7 +320,9 @@ const AddProduct = () => {
                         <Button
                           type="button"
                           className="bg-black"
-                          onClick={() => addItemToFormState("product_tags", field)}
+                          onClick={() =>
+                            addItemToFormState("product_tags", field)
+                          }
                         >
                           Añadir tag
                         </Button>
@@ -354,7 +335,7 @@ const AddProduct = () => {
 
               {/* Lista de tags */}
               <ul className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {form.getValues("product_tags").map((tag, index) => (
+                {product_tags.map((tag, index) => (
                   <Badge
                     key={index}
                     className="bg-gray-700 w-fit relative z-20"
@@ -364,7 +345,9 @@ const AddProduct = () => {
                     <button
                       type="button"
                       className="bg-red-500 absolute -top-2 -right-2 z-50 w-fit p-1 rounded-full"
-                      onClick={() => deleteItemFromFormState(index, "product_tags")}
+                      onClick={() =>
+                        deleteItemFromFormState(index, "product_tags")
+                      }
                     >
                       <X size={12} color="white" />
                     </button>
@@ -391,7 +374,9 @@ const AddProduct = () => {
                         <Button
                           type="button"
                           className="bg-black"
-                          onClick={() => addItemToFormState("product_notes", field)}
+                          onClick={() =>
+                            addItemToFormState("product_notes", field)
+                          }
                         >
                           Añadir nota
                         </Button>
@@ -403,7 +388,7 @@ const AddProduct = () => {
               />
 
               <ul className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {form.getValues("product_notes")?.map((note, index) => (
+                {product_notes?.map((note, index) => (
                   <Badge
                     key={index}
                     className="bg-gray-700 w-fit relative z-20"
@@ -413,7 +398,9 @@ const AddProduct = () => {
                     <button
                       type="button"
                       className="bg-red-500 absolute -top-2 -right-2 z-50 w-fit p-1 rounded-full"
-                      onClick={() => deleteItemFromFormState(index, "product_notes")}
+                      onClick={() =>
+                        deleteItemFromFormState(index, "product_notes")
+                      }
                     >
                       <X size={12} color="white" />
                     </button>
@@ -425,6 +412,7 @@ const AddProduct = () => {
           <Button
             type="submit"
             className="border rounded-xl w-full p-2 border-black hover:cursor-pointer"
+            disabled={isCreatingProduct}
           >
             Añadir producto
           </Button>

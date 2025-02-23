@@ -2,7 +2,6 @@ import { Product } from "@/interfaces/Product.Interface.ts";
 import apiClient from "../index.ts";
 import { store } from "@/store/store.ts";
 import { getAxiosErrorResponse } from "@/utils/utils.ts";
-import { FiltersStateType } from "@/contexts/filteringContext.tsx";
 
 
 const token = store.getState().user.token;
@@ -32,7 +31,7 @@ async function GetCartProducts(ids: string[]) {
 
 async function FilterProducts(params: string) {
   try {
-    console.log(params)
+    console.log("params at api.ts:", params)
     const response = await apiClient.get(`/products/filter-products?${params}`)
     return response.data
 

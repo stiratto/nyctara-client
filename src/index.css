@@ -1,4 +1,8 @@
 @import 'tailwindcss';
+/*
+  ---break---
+*/
+@custom-variant dark (&:is(.dark *));
 
 @config '../tailwind.config.mjs';
 
@@ -104,7 +108,6 @@
   --ring: 212.7 26.8% 83.9%;
 }
 
-
 @layer base {
   * {
     @apply border-border;
@@ -122,12 +125,46 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  /*
+  ---break---
+*/
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  /*
+  ---break---
+*/
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+@theme {
+    --animate-wiggle: filteringloading 2s ease-in-out infinite;
+    @keyframes filteringloading {
+      0%   {scale: 1;}
+      25%  {scale: 1.2;}
+      50%  {scale: 1}
+      75%  {scale: 1.2;}
+      100% {scale: 1}
+  }
 }
 
 .no-scroll {
   overflow: hidden;
 }
-
 
 .hamburguer {
   position: relative;
@@ -195,4 +232,15 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
+}
+/*
+  ---break---
+*/
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

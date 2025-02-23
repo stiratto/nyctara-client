@@ -27,12 +27,6 @@ export const getAxiosErrorResponse = (error: any): string => {
    }
    return ""
 }
-
-export const deleteItemFromArrayState = <T extends unknown>(arr: T[], item: number) => {
-   // remove item from the state array
-   return arr.filter((_, i: any) => i !== item)
-}
-
 export const formatPrice = (price: number) => {
 
    if (price) {
