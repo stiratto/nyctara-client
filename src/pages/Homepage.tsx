@@ -1,4 +1,5 @@
 import productsApi from "@/api/products/products.api";
+import BoldPaymentButton from "@/components/Cart/BoldPayButton";
 import ProductsNotFound from "@/components/NotFound/ProductsNotFound";
 import { ProductCard } from "@/components/Products/ProductCard";
 import { Product } from "@/interfaces/Product.Interface";
@@ -14,6 +15,7 @@ const Homepage = () => {
 
   return (
     <div className="flex flex-col justify-center items-center ">
+      <BoldPaymentButton/> 
       <div className="h-screen">
         <picture> <source srcSet="https://nyctara-perfumery-static.s3.us-east-1.amazonaws.com/nyctara%2Bgrande.webp" media="(min-width: 300px)" /> <img src="https://nyctara-perfumery-static.s3.us-east-1.amazonaws.com/nyctara%2Bgrande.webp" alt="landing image" height="100" width="600" loading="lazy" decoding="async" /> </picture>
 

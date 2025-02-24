@@ -24,7 +24,7 @@ export const ProductCard = ({
 
       <Card className="group relative bg-transparent border-black/20 max-w-xs h-full">
 
-        <IsAvailableBadge isAvailable={isAvailable} className="absolute bg-[#ecefdc] rounded-none rounded-br-xl rounded-tl" />
+        <IsAvailableBadge isAvailable={isAvailable} className="absolute bg-[#ecefdc] rounded-none rounded-br rounded-tl" />
         <LazyLoadImage src={product_images?.[0] as string} effect={"black-and-white"} className="h-80 rounded-t" />
 
         <CardContent className="flex flex-col gap-2 text-center justify-center items-center w-full">

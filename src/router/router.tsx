@@ -3,6 +3,7 @@ import App from "../App.tsx";
 import { lazy } from "react";
 import Layout from "../layouts/Layout.tsx"
 import { FilteringDrawerContextProvider } from "@/contexts/FilteringDrawerContext.tsx";
+import { FilteringProvider } from "@/contexts/filteringContext.tsx";
 const Login = lazy(() => import('../pages/Login.tsx'))
 const PageNotFound = lazy(() => import('../components/NotFound/PageNotFound.tsx'))
 const AddUpdateCategory = lazy(() => import('@/components/Categories/AddUpdateCategory.tsx'))
@@ -33,9 +34,12 @@ const router = createBrowserRouter([
       },
       {
         path: "/categoria/:id",
-        element: <FilteringDrawerContextProvider>
-          <CategoryProducts />
-        </FilteringDrawerContextProvider>,
+        element:
+          <FilteringProvider>
+            <FilteringDrawerContextProvider>
+              <CategoryProducts />
+            </FilteringDrawerContextProvider>,
+          </FilteringProvider>
       },
       {
         path: "/producto/:id",

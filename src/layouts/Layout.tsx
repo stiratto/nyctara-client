@@ -6,14 +6,13 @@ import { ScrollRestoration } from "react-router-dom";
 import { Navbar } from "../components/Navbar/Navbar.tsx";
 import { FloatingWhatsapp } from "../components/Other/FloatingWhatsapp.tsx";
 import Footer from "../pages/Footer.tsx";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import LoadingPage from "@/components/Other/LoadingPage.tsx";
 import { ErrorFallback } from "@/components/Other/ErrorFallback.tsx";
 
 const Layout = () => {
-
   return (
-    <div>
+    <div className="relative">
       <Navbar />
       <FloatingWhatsapp />
       <Toaster theme="dark" position="top-center" toastOptions={{
