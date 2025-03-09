@@ -21,7 +21,7 @@ const Login = () => {
     },
   });
 
-  const handleSubmit = (e: HTMLFormElement) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     handleLogin();
   };

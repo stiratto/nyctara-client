@@ -1,4 +1,3 @@
-import { CartFormData } from "@/interfaces/Cart.Interface";
 import { Discount } from "@/interfaces/Discount.interface";
 import { Product } from "@/interfaces/Product.Interface";
 import { addProductToCart } from "@/store/cart/CartProductsSlice";
@@ -35,18 +34,4 @@ export const getCartTotal = () => {
     }, 0);
 };
 
-export const createWhatsAppMessage = (data: CartFormData) => {
-    const cartProducts = store.getState().cart.products;
-    const subtotal = getCartTotal();
-    const productMessage = cartProducts
-        .map((product) => {
-            return `*${product.product_name}: ${product.product_quantity} `;
-        })
-        .join("\n");
 
-    const totalMessage = `\n\nSubtotal: $${subtotal}\n\nTotal a pagar: $${subtotal}\n\nElegí el método de pago: ${data.paymentMethod}
-                }\n\nMis datos para recibir el pedido son:\n${data.name}\n${data.number}\n${data.address}\n${data.city}\n¡Muchas gracias!`;
-
-    const fullMessage = `Hola!! Buenos días/tardes/noches.\nMi pedido es el siguiente:\n\n${productMessage}${totalMessage}`;
-    return encodeURIComponent(fullMessage);
-};

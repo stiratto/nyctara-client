@@ -84,7 +84,7 @@ const cartProductsSlice = createSlice({
       const product = state.products.find(
         (product) => product.id === action.payload.id,
       );
-      if (product) {
+      if (product && product.product_quantity) {
         product.product_quantity -= action?.payload?.quantity as any;
       }
     },

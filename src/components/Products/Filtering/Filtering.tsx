@@ -8,6 +8,7 @@ import { RefreshCw } from "lucide-react"
 import { useParams } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import categoriesApi from "@/api/categories/categories.api"
+import { useEffect } from "react"
 
 export const Filtering = () => {
    const { id } = useParams()
@@ -18,7 +19,7 @@ export const Filtering = () => {
       setFilters("availability", "")
    }
 
-   const { data } = useQuery({
+   const {data} = useQuery({
       queryKey: ['cleared-category-products', id],
       queryFn: async () => {
          const response = await categoriesApi.GetCategoryProducts(id as string)
@@ -29,6 +30,9 @@ export const Filtering = () => {
       enabled: !!id,
 
    })
+   useEffect(() => {
+      data
+   }, [])
 
    return (
       <div className="flex flex-col items-center gap-2 overflow-x justify-center pb-4">

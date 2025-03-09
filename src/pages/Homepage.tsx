@@ -1,5 +1,4 @@
 import productsApi from "@/api/products/products.api";
-import BoldPaymentButton from "@/components/Cart/BoldPayButton";
 import ProductsNotFound from "@/components/NotFound/ProductsNotFound";
 import { ProductCard } from "@/components/Products/ProductCard";
 import { Product } from "@/interfaces/Product.Interface";
@@ -33,16 +32,8 @@ const Homepage = () => {
               {products.map((product: Product) => (
                 <ProductCard
                   key={uuidv4()}
-                  id={product.id}
-                  quantity={product.quantity}
-                  product_quality={product.product_quality}
-                  images={product.images}
-                  description={product.description}
-                  category={product.category}
-                  name={product.name}
-                  price={product.price}
-                  tags={product.tags}
-                  notes={product.notes}
+                  {...product}
+                  
                 />
               ))}
             </ul>
