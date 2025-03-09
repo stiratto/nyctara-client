@@ -10,7 +10,7 @@ export function ErrorFallback(props: FallbackProps) {
    return (
       <div className="h-screen flex flex-col justify-center items-center gap-8">
          <OctagonAlert color={'red'} size={40} />
-         <TypographyH1 classNames="text-red-500">Algo no fue bien :( </TypographyH1>
+         <TypographyH1 className="text-red-500">Algo no fue bien :( </TypographyH1>
          <p style={{ color: "red" }}>{error.message}</p>
          <Button className="bg-black hover:bg-black/50" onClick={resetErrorBoundary}>Reintentar</Button>
       </div>

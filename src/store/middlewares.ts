@@ -1,7 +1,6 @@
 import { Discount } from "@/interfaces/Discount.interface";
 import { discountNotExistsError } from "./discounts/DiscountsSlice";
 import { changeProductPrice } from "./cart/CartProductsSlice";
-import { Product } from "@/interfaces/Product.Interface";
 
 
 export function changePriceIfUserUsingDiscount({ getState }: any) {

@@ -12,8 +12,8 @@ import { useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { NavLink } from "react-router-dom";
-import Input from "../Other/Input.tsx";
 import { cn } from "@/utils/utils.ts";
+import { Input } from "../ui/input";
 
 export function Marcas() {
   const userData = useSelector((state: RootState) => state.user.authenticated);
@@ -66,11 +66,10 @@ export function Marcas() {
           <ul className="flex flex-col gap-4 my-8">
             <div className="flex gap-2 items-center relative">
               <Input
-                name="category"
                 placeholder="Buscar categoria"
                 type="text"
                 value={searchTerm}
-                className="rounded-none"
+                className=""
                 onChange={handleInputChange}
               />
               <Search size={17} className="relative right-8" />

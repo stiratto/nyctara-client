@@ -57,7 +57,7 @@ export const SearchProduct = () => {
          <div
             ref={resultsRef}
             className={clsx(
-               "w-full max-h-48 overflow-y-scroll overflow-x-hidden absolute top-11 border rounded-lg bg-[#ecefdc] border-gray-500 text-white",
+               "w-full max-h-48 overflow-y-scroll overflow-x-hidden absolute top-11 border rounded-lg border-gray-500 text-white shadow-md bg-white",
                show ? "block" : "hidden",
             )}
          >

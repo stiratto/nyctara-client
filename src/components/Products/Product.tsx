@@ -19,7 +19,7 @@ import ProductBreadcrumb from "./ProductBreadcrumb";
 import { Leaf, LoaderCircle, Minus, Plus, ShoppingCart } from "lucide-react";
 import { Discount } from "@/interfaces/Discount.interface.ts";
 import clsx from "clsx";
-import { cn } from "@/lib/utils.ts";
+import { cn } from "@/utils/utils.ts";
 import { IsAvailableBadge } from "./IsAvailableBadge.tsx";
 import { formatPrice } from "@/utils/utils.ts";
 import { TypographyH1 } from "../Typography/h1.tsx";

@@ -23,11 +23,6 @@ export const FilteringDrawer = () => {
       getNotes()
    }, [])
 
-   useEffect(() => {
-      console.log(drawerIsOpen)
-   }, [drawerIsOpen])
-
-
    return (
       <Drawer open={drawerIsOpen} onClose={setDrawerIsOpen} direction={"top"}>
          <DrawerTrigger onClick={setDrawerIsOpen}>Filtrar por</DrawerTrigger>

@@ -17,7 +17,6 @@ export const UpdateCategoriesSelect = () => {
     isError,
   } = useQuery<Category[]>({
     queryKey: ["categories"],
-    // Query key
     queryFn: async () => {
       const response = await categoriesApi.GetAllCategories();
       return response;

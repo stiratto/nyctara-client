@@ -24,9 +24,9 @@ const ProductBreadcrumb = ({ category, name, id }: any) => {
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         {category !== "PP" && (
-          <BreadcrumbItem>
+          <BreadcrumbItem >
             <BreadcrumbLink asChild>
-              <Link to={`/categoria/${id}`}>{category}</Link>
+              <Link to={`/categoria/${id}`} className="underline">{category}</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
         )}

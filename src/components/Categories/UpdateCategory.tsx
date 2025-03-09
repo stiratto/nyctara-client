@@ -28,7 +28,7 @@ const UpdateCategory = () => {
   });
 
 
-  const { mutate: mutationCategory } = useMutation({
+  const { mutate: mutationCategory, isPending } = useMutation({
     mutationFn: (data: Category) => categoriesApi.UpdateCategory(data),
     onSuccess: () => {
       toast.success("La categoria fue actualizada");
@@ -50,7 +50,6 @@ const UpdateCategory = () => {
         id: (category?.id as string),
         category_name: data?.category_name
       }
-
       mutationCategory(categoryToSend);
     } catch (error: any) {
       console.log(error)
@@ -85,7 +84,7 @@ const UpdateCategory = () => {
             </FormItem>
           )} />
 
-          <button type="submit">Finalizar</button>
+          <button type="submit" disabled={isPending}>Finalizar</button>
         </form>
       </Form>
     </main>

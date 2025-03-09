@@ -2,8 +2,10 @@
 
 import { CalendarIcon } from "lucide-react"
 import { SubmitHandler, useForm } from "react-hook-form"
+import { es } from "date-fns/locale"; // Import the Russian locale
+
 import { format } from "date-fns"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
@@ -39,7 +41,6 @@ export function AddDiscountForm() {
     mutationKey: ["create-discount", form.getValues("discount_name")],
     mutationFn: (data) => discountsApi.CreateDiscount(data),
     onMutate: async (data) => {
-      // optimistic performance
       // optimistic performance
       await queryClient.cancelQueries(["discounts"] as any);
 
@@ -138,6 +139,7 @@ export function AddDiscountForm() {
                     disabled={(date) =>
                       date > new Date("2030-1-1") || date < new Date()
                     }
+                    locale={es}
                     initialFocus
                   />
                 </PopoverContent>

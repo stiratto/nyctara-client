@@ -1,6 +1,6 @@
 import discountsApi from "@/api/discounts/discounts.api";
 import { Discount } from "@/interfaces/Discount.interface";
-import { applyDiscount, clearCurrentDiscountUsing, clearDiscountError } from "@/store/discounts/DiscountsSlice";
+import { applyDiscount, clearDiscountError } from "@/store/discounts/DiscountsSlice";
 import { AppDispatch, RootState } from "@/store/store";
 import { useMutation } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { clearCart } from "@/store/cart/CartProductsSlice";
 
 const ApplyDiscount = () => {
     const [discount, setDiscount] = useState<string>("");
@@ -17,7 +16,7 @@ const ApplyDiscount = () => {
     const dispatch = useDispatch<AppDispatch>();
     const userIsUsingDiscount = useSelector((state: RootState) => state.discounts.current_discount_being_used)
 
-    const { mutate: getDiscount, data: discountOnDb } = useMutation<Discount>({
+    const { mutate: getDiscount } = useMutation<Discount>({
         mutationFn: () => discountsApi.GetDiscountByName(discount),
         onSuccess: (data: Discount) => {
             dispatch(applyDiscount(data))

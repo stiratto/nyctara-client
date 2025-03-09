@@ -13,8 +13,7 @@ const EditProduct = lazy(() => import('../components/Products/Admin/EditProduct.
 const Discounts = lazy(() => import('../components/Discounts/Discounts.tsx'))
 const Cart = lazy(() => import('@/components/Cart/Cart.tsx'))
 const AdminPanel = lazy(() => import('@/components/Admin/AdminPanel.tsx'))
-const SearchProductsResults = lazy(() => import('@/components/Products/SearchProductsResults.tsx'))
-const PrivateRoute = lazy(() => import('@/PrivateRoute.tsx'))
+const PrivateRoute = lazy(() => import('./PrivateRoute.tsx'))
 const UpdateCategory = lazy(() => import('../components/Categories/UpdateCategory.tsx'))
 const CategoryProducts = lazy(() => import('../components/Products/CategoryProducts.tsx'))
 
@@ -48,10 +47,6 @@ const router = createBrowserRouter([
       {
         path: "/carrito",
         element: <Cart />,
-      },
-      {
-        path: "/busqueda/",
-        element: <SearchProductsResults />,
       },
       {
         element: <PrivateRoute />,

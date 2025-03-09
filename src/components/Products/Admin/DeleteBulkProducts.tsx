@@ -100,8 +100,8 @@ const DeleteBulkProducts = () => {
     <div className="space-y-4 w-full max-w-xl mx-auto">
 
       <TypographyH1>Eliminar productos</TypographyH1>
-      <div className="bg-[#ecefdc] relative">
-        <Input onChange={search} placeholder="Busca por el nombre del producto" className="searchInput pl-8 border-gray-500! w-min" />
+      <div className=" relative">
+        <Input onChange={search} placeholder="Busca por el nombre del producto" className=" pl-8 w-min" />
         <Search size={17} className="absolute top-[10px] left-2" />
       </div>
 

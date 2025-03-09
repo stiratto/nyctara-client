@@ -15,7 +15,7 @@ export const FilterByPrice = () => {
       min: "",
       max: ""
    })
-   const { params, filters, setFilters } = useFiltering()
+   const { params, setFilters } = useFiltering()
 
    const handleFiltering = () => {
       if (minMax.min.length !== 0 && minMax.max.length !== 0) {

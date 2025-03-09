@@ -3,13 +3,21 @@ import { AppDispatch, RootState } from "@/store/store";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { TypographyP } from "../Typography/p";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { IsAvailableBadge } from "../Products/IsAvailableBadge";
 import { formatPrice } from "@/utils/utils";
 
-const CartProduct = ({ isAvailable, product_name, product_price, id, product_quantity, product_description, product_notes, product_quality, product_images }: any) => {
+const CartProduct = ({ 
+  isAvailable, 
+  product_name, 
+  product_price, 
+  id, 
+  product_quantity, 
+  // product_description, 
+  product_notes, 
+  product_quality, 
+  product_images }: any) => {
   const dispatch = useDispatch<AppDispatch>();
   const [priceDiscounted, setPriceDiscounted] = useState<number>(0)
 

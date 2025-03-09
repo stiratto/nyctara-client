@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Category } from "@/interfaces/Category.Interface";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import { ExternalLink, Frown, Loader } from "lucide-react";
 import { NavLink as Link } from "react-router-dom";
 

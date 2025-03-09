@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { cn } from "../../lib/utils";
+import { cn } from "@/utils/utils";
 
 interface NavItem {
   icon: JSX.Element;

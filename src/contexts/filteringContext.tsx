@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 // filtrados disponibles
-type ByType = "price" | "availability" | "time" | "notes"
+type ByType = "price" | "availability" | "notes"
 // parametros que se les asigna a los filtrados
 type ParamType = number[] | string[] | string
 
@@ -17,7 +17,6 @@ export type FiltersStateType = {
    price: string,
    availability: "true" | "false",
    notes: string[],
-   time: "newest" | "oldest"
 }
 
 // tipo del estado del createContext()
@@ -29,44 +28,34 @@ export type FilteringProviderState = {
 } | null
 
 
+//creamos el contexto
 const FilteringProviderContext = createContext<FilteringProviderState>(null)
 
-// el usuario seleccionaria un filtro, si le da a "aplicar", se
-// ejecutaria setFilters() en el componente, si el filtro es precio,
-// por ejemplo, filters seria algo asi:
-//
-// setFilters(by: "price", param: [20000, 50000])
-// para disponibilidad seria:
-// setFilters(by: "availability", param: "available")
-// para time seria:
-// setFilters(by: "time", param: "newest") (newest to oldest) o
-// setFilters(by: "time", param: "oldest") (oldest to newest) 
-// para ontes seria:
-// setFilters(by: "notes", param: ["vainilla", "pene"])
-// y al armar el url, dividiriamos el array con comillas
-
+// esto se ejecuta cuando se instancie el Context.Provider, 
 export const FilteringProvider = ({ children }: FilteringProviderProps) => {
+   // filters guardara un objeto con los filtros permitidos
    const [filters, setFilters] = useState<FiltersStateType>({} as any)
+   // los query params que se pasaran al fetch
    const [params, setParams] = useState<string>("")
 
+   // cuando filters cambie
    useEffect(() => {
-      // loop through filters entries
+      // creamos un nuevo urlsearchparams()
       const urlParams = new URLSearchParams()
+      // para cada filtro que el usuario selecciono
       for (let [k, v] of Object.entries(filters)) {
-
-         // if the value is an array, join the elements in a single
-         // str separated by comma
+         // si el filtro es un array (pueden ser notas)
          if (Array.isArray(v)) {
+            // convertimos el array a una string 
             v = v.join(",")
          }
+         // anadimos el k,v a urlParams
          urlParams.append(k, v)
       }
-
       setParams(urlParams.toString())
-      console.log("params at context:", urlParams.toString())
-
    }, [filters])
 
+   // esto es lo ques e puede usar en los componentes
    const value = {
       filters,
       setFilters: (by: ByType, param: ParamType) => {
@@ -80,6 +69,7 @@ export const FilteringProvider = ({ children }: FilteringProviderProps) => {
    }
 
    return (
+
       <FilteringProviderContext.Provider value={value} >
          {children}
       </FilteringProviderContext.Provider>

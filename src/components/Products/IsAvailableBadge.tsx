@@ -1,6 +1,6 @@
 import { Dot } from "lucide-react"
 import { TypographyP } from "../Typography/p"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils/utils"
 
 export const IsAvailableBadge = ({ isAvailable, className }: { isAvailable: boolean, className?: string }) => {
 

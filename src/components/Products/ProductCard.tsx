@@ -1,7 +1,6 @@
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
 import { Product } from "@/interfaces/Product.Interface";
 import { NavLink as Link } from "react-router-dom";
-import { Badge } from "../ui/badge";
 
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { formatPrice } from "@/utils/utils";
@@ -15,7 +14,7 @@ export const ProductCard = ({
   //product_tags,
   //product_description,
   //product_quality,
-  product_notes,
+  // product_notes,
   product_images,
   id,
 }: Product) => {

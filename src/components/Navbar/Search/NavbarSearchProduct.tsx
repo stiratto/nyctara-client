@@ -1,4 +1,4 @@
-import { ExternalLink, Frown, Loader2, PackageSearch, PersonStanding, Search, X } from "lucide-react";
+import { ExternalLink, Frown, Loader2, PackageSearch, Search, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Input } from "@/components/ui/input";
@@ -20,7 +20,6 @@ export const NavbarSearchProducts = () => {
     queryFn: () => productsApi.SearchProducts(input),
     enabled: !!debouncedInput
   })
-
 
   const reveal = () => {
     setShow(!show)
@@ -48,9 +47,6 @@ export const NavbarSearchProducts = () => {
     return () => clearTimeout(timeout);
 
   }, [input])
-
-
-
 
   return (
     <div className="relative w-full" ref={divRef}>

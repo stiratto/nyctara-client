@@ -4,7 +4,6 @@ import { Product } from "@/interfaces/Product.Interface";
 import { ShoppingCart } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import ApplyDiscount from "./ApplyDiscount";
-import { CartBuyForm } from "./CartBuyForm";
 import ProductsNotFound from "../NotFound/ProductsNotFound";
 import { useEffect, useState } from "react";
 import { getCartTotal } from "@/utils/cartUtils";
@@ -76,8 +75,7 @@ const Cart = () => {
             Más gastos de envio
           </span>
         </div>
-        <BoldPaymentButton amount={total}/>
-        <CartBuyForm />
+        <BoldPaymentButton amount={total} />
 
       </SheetContent>
     </Sheet>

@@ -1,5 +1,5 @@
 "use client";
-import { cn } from "../../lib/utils";
+import { cn } from "@/utils/utils";
 import { Marcas } from "./Marcas";
 import Cart from "@/components/Cart/Cart";
 import { NavbarSearchProducts } from "./Search/NavbarSearchProduct";

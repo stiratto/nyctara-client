@@ -6,9 +6,9 @@ import { ScrollRestoration } from "react-router-dom";
 import { Navbar } from "../components/Navbar/Navbar.tsx";
 import { FloatingWhatsapp } from "../components/Other/FloatingWhatsapp.tsx";
 import Footer from "../pages/Footer.tsx";
-import { Suspense, useEffect } from "react";
-import LoadingPage from "@/components/Other/LoadingPage.tsx";
+import { Suspense } from "react";
 import { ErrorFallback } from "@/components/Other/ErrorFallback.tsx";
+import { LoadingScreen } from "./LoadingScreen.tsx";
 
 const Layout = () => {
   return (
@@ -20,7 +20,7 @@ const Layout = () => {
       }} />
 
       <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <Suspense fallback={<LoadingPage />}>
+        <Suspense fallback={<LoadingScreen />}>
           <Outlet />
         </Suspense>
       </ErrorBoundary>
