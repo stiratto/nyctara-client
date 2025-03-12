@@ -2,11 +2,13 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import productsApi from "@/api/products/products.api";
-import { useFiltering } from "@/contexts/filteringContext";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import queryClient from "@/main";
 import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import { addNewFiltering } from "@/store/filtering/FilteringSlice";
 
 export const FilterByPrice = () => {
    const { id } = useParams()
@@ -15,42 +17,43 @@ export const FilterByPrice = () => {
       min: "",
       max: ""
    })
-   const { params, setFilters } = useFiltering()
 
-   const handleFiltering = () => {
+   const dispatch = useDispatch<AppDispatch>()
+   const { filters, params } = useSelector((state: RootState) => state.filtering)
+
+   const handleFiltering = (price: any) => {
       if (minMax.min.length !== 0 && minMax.max.length !== 0) {
-         setFilters("price", `${minMax.min},${minMax.max}`)
+         dispatch(addNewFiltering({ by: "price", param: `${minMax.min},${minMax.max}` }))
+         refetch()
          setMinMax({ min: "", max: "" })
          setPriceFiltering("")
          return
       }
 
-      setFilters("price", priceFiltering)
-      setPriceFiltering("")
+      dispatch(addNewFiltering({ by: "price", param: price }))
    }
 
 
-   const { refetch, data } = useQuery({
-      queryKey: ["filtered-products", params],
-      queryFn: () => productsApi.FilterProducts(params),
-      enabled: !!params
+
+   const { refetch } = useQuery({
+      queryKey: ['filtered-products', filters.price],
+      queryFn: async () => {
+         const response = await productsApi.FilterProducts(params, id as string)
+         queryClient.setQueryData(['category-products', id], response);
+         return response
+      },
+      enabled: !!filters.price,
    })
-
-
-   useEffect(() => {
-      queryClient.setQueryData(['category-products', id], data)
-   }, [data])
 
 
    return (
       <div>
-
          <div className="text-sm space-y-4 flex flex-col bg-[#ecefdc] text-black">
-            <RadioGroup dir="ltr" onValueChange={(e) => {
-               setFilters("price", e)
-               setPriceFiltering(e)
-               refetch()
-            }} defaultValue={priceFiltering}>
+            <RadioGroup
+               onValueChange={(e) => {
+                  setPriceFiltering(e)
+                  handleFiltering(e)
+               }} >
                <div className="flex items-center gap-2">
                   <RadioGroupItem value="20000,50000" />
                   <span>De $20.000 a $50.000</span>

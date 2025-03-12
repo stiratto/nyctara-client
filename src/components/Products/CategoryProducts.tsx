@@ -6,19 +6,14 @@ import { useIsFetching, useQueries } from "@tanstack/react-query";
 import ProductsNotFound from "../NotFound/ProductsNotFound";
 import { TypographyH1 } from "../Typography/h1";
 import { LoaderCircle } from "lucide-react";
-import { useFiltering } from "@/contexts/filteringContext";
-import productsApi from "@/api/products/products.api";
-import queryClient from "@/main";
-import { useEffect } from "react";
-import { FilteringLoadingScreen } from "./Filtering/FilteringLoadingScreen";
 import { Filtering } from "./Filtering/Filtering";
 import { cn } from "@/utils/utils";
+import { LazyLoadComponent } from "react-lazy-load-image-component";
 
 const CategoryProducts = () => {
   const { id: categoryId } = useParams();
 
-  const { params } = useFiltering()
-  const [categoryProductsResults, categoryResults, filterProductsQuery] = useQueries({
+  const [categoryProductsResults, categoryResults] = useQueries({
     queries: [
       {
         queryKey: ["category-products", categoryId],
@@ -29,26 +24,15 @@ const CategoryProducts = () => {
         queryKey: ["category", categoryId],
         queryFn: () => api.GetCategoryById(categoryId as string),
         enabled: !!categoryId,
-      },
-      {
-        queryKey: ['filtered-products', params],
-        queryFn: () => productsApi.FilterProducts(params),
-        enabled: !!params
       }
-
-    ],
+    ]
   });
-
-  const { data: filteredProducts } = filterProductsQuery
-
 
   const { isLoading, data: products } = categoryProductsResults;
   const { data: category } = categoryResults;
+
   const isFetching = useIsFetching({ queryKey: ['filtered-products'] })
 
-  useEffect(() => {
-    queryClient.setQueryData(['category-products', categoryId], filteredProducts)
-  }, [filteredProducts])
 
   return (
     <div
@@ -56,8 +40,18 @@ const CategoryProducts = () => {
         isLoading && "h-screen", products?.length > 3 ? "h-auto" : "h-screen"
       )}
     >
+      <div className={cn("fixed text-white transition-all bg-black/50 w-full h-screen top-0 z-[80] flex flex-col items-center justify-center", isFetching === 1 ? "opacity-100" : "opacity-0 pointer-events-none")}>
+        <img
+          src="https://nyctara-perfumery-static.s3.amazonaws.com/ng+footer+transaprente.png"
+          alt="Imagen de carga de filtrado"
+          className="animate-wiggle"
+        />
 
-      {isFetching && <FilteringLoadingScreen isFetching />}
+        <p>Filtrando productos...</p>
+      </div>
+
+
+
       <TypographyH1>{category?.category_name}</TypographyH1>
 
       <Filtering />
@@ -74,10 +68,12 @@ const CategoryProducts = () => {
           ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {products.map((product: Product) => (
-                <ProductCard
-                  key={product.id}
-                  {...product}
-                />
+                <LazyLoadComponent key={product.id}>
+                  <ProductCard
+                    key={product.id}
+                    {...product}
+                  />
+                </LazyLoadComponent>
               ))}
             </div>
           )

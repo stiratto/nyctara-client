@@ -8,15 +8,15 @@ import { Button } from "../ui/button";
 import { IsAvailableBadge } from "../Products/IsAvailableBadge";
 import { formatPrice } from "@/utils/utils";
 
-const CartProduct = ({ 
-  isAvailable, 
-  product_name, 
-  product_price, 
-  id, 
-  product_quantity, 
+const CartProduct = ({
+  isAvailable,
+  product_name,
+  product_price,
+  id,
+  product_quantity,
   // product_description, 
-  product_notes, 
-  product_quality, 
+  product_notes,
+  product_quality,
   product_images }: any) => {
   const dispatch = useDispatch<AppDispatch>();
   const [priceDiscounted, setPriceDiscounted] = useState<number>(0)

@@ -60,7 +60,6 @@ const Cart = () => {
         <SheetDescription></SheetDescription>
         <ApplyDiscount />
         {cartProducts?.length > 0
-
           ? (
             <ul className="flex flex-col gap-4 p-4 overflow-y-auto h-full">
               {cartProducts?.map((product: Product) => <CartProduct key={product.id} {...product} />)}

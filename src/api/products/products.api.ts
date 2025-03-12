@@ -39,10 +39,10 @@ async function GetCartProducts(ids: string[]) {
 
 }
 
-async function FilterProducts(params: string) {
+async function FilterProducts(params: string, categoryId: string) {
   try {
-    console.log("params at api.ts:", params)
-    const response = await apiClient.get(`/products/filter-products?${params}`)
+    console.log("Filtrando productos... products.api.ts:45")
+    const response = await apiClient.get(`/products/filter-products/${categoryId}?${params}`)
     return response.data
 
   } catch (err: any) {

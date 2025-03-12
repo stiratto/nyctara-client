@@ -1,10 +1,13 @@
 import productsApi from "@/api/products/products.api"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { useFiltering } from "@/contexts/filteringContext"
+import { useFiltering } from "@/contexts/FilteringContext"
 import queryClient from "@/main"
+import { addNewFiltering } from "@/store/filtering/FilteringSlice"
+import { AppDispatch, RootState } from "@/store/store"
 import { useQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import { useParams } from "react-router-dom"
 
 export const FilterByNotes = () => {
@@ -15,24 +18,25 @@ export const FilterByNotes = () => {
       queryFn: () => productsApi.GetAllNotes()
    })
 
-   const { params, setFilters } = useFiltering()
+   const dispatch = useDispatch<AppDispatch>()
+   const { params, filters } = useSelector((state: RootState) => state.filtering)
 
    const handleFiltering = () => {
-      setFilters("notes", selectedNotes)
-      filterProducts()
+      dispatch(addNewFiltering({ by: "notes", param: selectedNotes }))
    }
 
-   const { refetch: filterProducts, data: filteredProducts } = useQuery({
-      queryKey: ['filtered-products', params],
-      queryFn: () => productsApi.FilterProducts(params),
-      enabled: !!params
+   useQuery({
+      queryKey: ["filtered-products", params],
+      queryFn: async () => {
+         const response = await productsApi.FilterProducts(params, id as string)
+         queryClient.setQueryData(['category-products', id], response)
+
+         return response
+      },
+      enabled: !!filters.notes
    })
 
 
-
-   useEffect(() => {
-      queryClient.setQueryData(['category-products', id], filteredProducts)
-   }, [filteredProducts])
    return (
       <div className="flex flex-col gap-4">
          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">

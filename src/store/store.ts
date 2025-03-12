@@ -4,6 +4,7 @@ import storage from "redux-persist/lib/storage";
 import cartProductsReducer from "./cart/CartProductsSlice";
 import discountsReducer from "./discounts/DiscountsSlice";
 import userAuthReducer from "./userAuth/userAuthSlice";
+import filteringReducer from "./filtering/FilteringSlice";
 import { changePriceApplyDiscount, changePriceIfUserUsingDiscount, checkIfUserAlreadyUsedDiscount } from "./middlewares.ts";
 
 export type AppThunk = ThunkAction<void, RootState, unknown, Action<string>>;
@@ -14,13 +15,16 @@ const rootReducer = combineReducers({
   user: userAuthReducer,
   cart: cartProductsReducer,
   discounts: discountsReducer,
+  filtering: filteringReducer
 });
 
 const persistConfig = {
   key: "root",
   storage,
   version: 1,
+  blacklist: ["filtering"],
   whitelist: ["user", "cart", "discounts"],
+
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

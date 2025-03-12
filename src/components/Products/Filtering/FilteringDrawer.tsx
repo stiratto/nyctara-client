@@ -1,4 +1,4 @@
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
+import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
 import {
    Accordion,
    AccordionContent,
@@ -10,6 +10,7 @@ import { useDrawerFilteringContext } from "@/contexts/FilteringDrawerContext"
 import productsApi from "@/api/products/products.api"
 import { useQuery } from "@tanstack/react-query"
 import { useEffect } from "react"
+import { useFiltering } from "@/contexts/FilteringContext"
 
 export const FilteringDrawer = () => {
    const { drawerIsOpen, setDrawerIsOpen } = useDrawerFilteringContext()
@@ -18,6 +19,8 @@ export const FilteringDrawer = () => {
       queryKey: ['notes'],
       queryFn: () => productsApi.GetAllNotes()
    })
+
+   const { filters } = useFiltering()
 
    useEffect(() => {
       getNotes()
@@ -34,7 +37,7 @@ export const FilteringDrawer = () => {
                </DrawerTitle>
                <Accordion type={"multiple"} >
                   {FilteringAccordionItems.map((item) => (
-                     <AccordionItem value={item.value}>
+                     <AccordionItem value={item.value} key={item.title}>
                         <AccordionTrigger>{item.title}</AccordionTrigger>
                         <AccordionContent>
                            {item.component}
@@ -44,6 +47,7 @@ export const FilteringDrawer = () => {
                </Accordion>
 
             </DrawerHeader>
+            <DrawerDescription>asd</DrawerDescription>
          </DrawerContent>
       </Drawer >
    )
