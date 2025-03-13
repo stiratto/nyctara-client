@@ -12,6 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import productsApi from "@/api/products/products.api";
 import { updateCartProducts } from "@/store/cart/CartProductsSlice";
 import BoldPaymentButton from "./BoldPayButton";
+import { BuyForm } from "./BuyForm";
 
 const Cart = () => {
   const cartProducts = useSelector((state: RootState) => state.cart.products);
@@ -74,7 +75,8 @@ const Cart = () => {
             Más gastos de envio
           </span>
         </div>
-        <BoldPaymentButton amount={total} />
+
+        <BuyForm total={total} />
 
       </SheetContent>
     </Sheet>
