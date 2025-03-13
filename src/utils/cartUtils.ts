@@ -1,5 +1,6 @@
 import { Discount } from "@/interfaces/Discount.interface";
 import { Product } from "@/interfaces/Product.Interface";
+import { TBuyFormSchema } from "@/schemas/BuyFormSchema";
 import { addProductToCart } from "@/store/cart/CartProductsSlice";
 import { store } from "@/store/store";
 import { toast } from "sonner";
@@ -24,6 +25,35 @@ export const addToCart = async (
         throw new Error("Error al agregar al carrito");
     }
 };
+
+export const getCustomerOrderProducts = () => {
+    const cartProducts = store.getState().cart.products;
+
+
+    const productsMessage = cartProducts.map((product) => {
+        if (product && product.product_quantity) {
+            `${product.product_name} ${product?.product_quantity}x - ${product.product_price * product?.product_quantity}$`
+        }
+    }
+    ).join('\n')
+
+    return productsMessage
+}
+
+export const createCustomerOrderMessage = (data: TBuyFormSchema) => {
+    return `
+🎉 Nuevo pedido!
+               
+${getCustomerOrderProducts()}
+                  
+
+Direccion: ${data.address}
+Nombre del que recibe el pedido: ${data.receiver_name}
+Nombre del que emite el pedido: ${data.customer_name}
+Numero de celular: ${data.phone_number}
+
+`
+}
 
 export const getCartTotal = () => {
     const cartProducts = store.getState().cart.products;

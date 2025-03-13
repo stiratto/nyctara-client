@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form"
+import { SubmitHandler, useForm } from "react-hook-form"
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog"
 import { useMutation } from "@tanstack/react-query";
 import paymentsApi from "@/api/payment/payments.api";
@@ -10,28 +10,55 @@ import { BuyFormSchema, TBuyFormSchema } from "@/schemas/BuyFormSchema"
 import BoldPaymentButton from "./BoldPayButton"
 import { TypographyH1 } from "../Typography/h1";
 import { TypographyP } from "../Typography/p";
+import mailingApi from "@/api/mailing/mailing.api";
+import { Mail } from "@/interfaces/Mailing.Interface";
+import { toast } from "sonner";
+import { createCustomerOrderMessage } from "@/utils/cartUtils";
 
 export const BuyForm = ({ total }: { total: number }) => {
 
    const { mutate } = useMutation({
       mutationKey: ['bold-payment-link'],
       mutationFn: () => paymentsApi.CreatePaymentLink(total),
+      onMutate: () => {
+         toast.loading("Estamos haciendo unas cosas, te redireccionaremos pronto...")
+      },
       onSuccess: (data) => {
          const url = data.payload.url
          window.location.replace(url)
       }
    })
 
+   const { mutate: sendMail } = useMutation({
+      mutationKey: ['send-mail'],
+      mutationFn: (mail: Mail) => mailingApi.SendMail(mail),
+
+   })
+
    const form = useForm<TBuyFormSchema>({
       resolver: zodResolver(BuyFormSchema),
-
-    reValidateMode: "onChange",
+      reValidateMode: "onChange",
    })
 
 
-   const onSubmit = (e) => {
-      e.preventDefault()
-      mutate()
+   const onSubmit: SubmitHandler<TBuyFormSchema> = (data, e) => {
+      // cuando se envie el formulario, tenemos que hacer lo
+      // siguiente:
+      // - enviar el formulario al correo
+      // - redireccionar al usuario al link de bold
+      e?.preventDefault()
+
+      try {
+         const mail = {
+            message: createCustomerOrderMessage(data)
+         }
+
+         sendMail(mail)
+         mutate()
+      } catch (err: any) {
+         toast.error(`Hubo un error inesperado :(, ${err}`)
+      }
+
    }
 
    return (
@@ -104,6 +131,29 @@ export const BuyForm = ({ total }: { total: number }) => {
                                     {...field}
                                     value={field?.value}
                                     placeholder="Nombre"
+                                 />
+                              </div>
+
+                           </FormControl>
+                           <FormMessage />
+                        </FormItem>
+                     )} />
+
+                  <FormField
+                     control={form.control}
+                     name="phone_number"
+                     render={({ field }) => (
+                        <FormItem>
+
+                           <FormControl>
+                              <div>
+                                 <Label htmlFor="phone_number">Numero de telefono</Label>
+                                 <Input
+                                    id="phone_number"
+                                    type="text"
+                                    {...field}
+                                    value={field?.value}
+                                    placeholder="+57 123 456 7891"
                                  />
                               </div>
 
