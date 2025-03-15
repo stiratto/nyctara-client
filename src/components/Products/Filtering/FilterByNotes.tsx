@@ -1,12 +1,11 @@
 import productsApi from "@/api/products/products.api"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { useFiltering } from "@/contexts/FilteringContext"
 import queryClient from "@/main"
 import { addNewFiltering } from "@/store/filtering/FilteringSlice"
 import { AppDispatch, RootState } from "@/store/store"
 import { useQuery } from "@tanstack/react-query"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useParams } from "react-router-dom"
 

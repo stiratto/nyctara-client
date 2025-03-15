@@ -35,9 +35,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getImagesPreview } from "@/utils/utils";
 import { useFormActions } from "@/hooks/useFormActions";
+import { FormFieldWrapper } from "@/components/Other/FormFieldWrapper";
 
 const AddProduct = () => {
-  const [tempImagesUrls, setTempImagesUrls] = useState<string[]>([])
+  const [tempImagesUrls, setTempImagesUrls] = useState<string[]>([]);
   const form = useForm<TAddProductSchema>({
     resolver: zodResolver(AddProductSchema),
     defaultValues: {
@@ -47,16 +48,17 @@ const AddProduct = () => {
     },
   });
 
-  const product_notes = form.getValues("product_notes")
-  const product_images = form.getValues("product_images")
-  const product_tags = form.getValues("product_tags")
+  const product_notes = form.getValues("product_notes");
+  const product_images = form.getValues("product_images");
+  const product_tags = form.getValues("product_tags");
 
-
-  const { addItemToFormState, deleteItemFromFormState, handleImageChangeForm } = useFormActions(form);
-
+  const { addItemToFormState, deleteItemFromFormState, handleImageChangeForm } =
+    useFormActions(form);
 
   const handleValue = (e: ChangeEvent<HTMLInputElement>) => {
-    form.setValue(e.target.name as keyof TAddProductSchema, e.target.value, { shouldValidate: true });
+    form.setValue(e.target.name as keyof TAddProductSchema, e.target.value, {
+      shouldValidate: true,
+    });
   };
 
   const { data: categories } = useQuery<Category[]>({
@@ -64,7 +66,6 @@ const AddProduct = () => {
     queryFn: () => categoriesApi.GetAllCategories(),
     retry: 3,
   });
-
 
   const { isPending: isCreatingProduct, mutate: createProduct } = useMutation({
     mutationFn: (data: any) => productsApi.CreateProduct(data),
@@ -134,8 +135,8 @@ const AddProduct = () => {
   // Each time product_images in the form changes, we get the URL of
   // each image to display the preview
   useEffect(() => {
-    const newImages = getImagesPreview(product_images)
-    setTempImagesUrls(newImages)
+    const newImages = getImagesPreview(product_images);
+    setTempImagesUrls(newImages);
   }, [product_images]);
 
   return (
@@ -146,56 +147,26 @@ const AddProduct = () => {
           className="flex flex-col justify-center w-full max-w-4xl gap-4"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <FormField
-            control={form.control}
+          <FormFieldWrapper
             name="product_name"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    type="text"
-                    {...field}
-                    placeholder="Nombre del producto"
-                    className="w-full"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label="Nombre del producto"
+            placeholder="Nombre del producto"
+            form={form}
           />
 
-          <FormField
-            control={form.control}
+          <FormFieldWrapper
             name="product_description"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Textarea
-                    {...field}
-                    className="bg-transparent w-full"
-                    placeholder="Descripcion"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label="product_description"
+            placeholder="Descripcion del producto"
+            textarea
+            form={form}
           />
-
-          <FormField
-            control={form.control}
+          <FormFieldWrapper
             name="product_price"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    type="number"
-                    {...field}
-                    placeholder="Precio del producto"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label="Precio del producto"
+            placeholder="Precio del producto"
+            type={"number"}
+            form={form}
           />
 
           <FormField
@@ -254,7 +225,9 @@ const AddProduct = () => {
                       <button
                         className="bg-red-500 text-white p-1 rounded-full relative bottom-32 left-24"
                         type="button"
-                        onClick={() => deleteItemFromFormState(index, "product_images")}
+                        onClick={() =>
+                          deleteItemFromFormState(index, "product_images")
+                        }
                       >
                         <X size={15} />
                       </button>
