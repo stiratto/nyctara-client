@@ -4,11 +4,9 @@ import { store } from "@/store/store.ts";
 import { getAxiosErrorResponse } from "@/utils/utils.ts";
 
 
-const getAuthHeaders = () => {
+const getAuthToken = () => {
   const token = store.getState().user.token;
-  return {
-    Authorization: token ? `Bearer ${token}` : '',
-  };
+  return token
 };
 
 // GET REQUESTS
@@ -121,7 +119,7 @@ async function GetProductsByLimitAndCategory(limit: number, category: string) {
 
 async function CreateProduct(body: any) {
   try {
-    const token = getAuthHeaders()
+    const token = getAuthToken()
     console.log(token)
     const response = await apiClient.post("/products/create-product", body, {
       headers: {
@@ -140,7 +138,7 @@ async function CreateProduct(body: any) {
 // PATCH
 async function EditProduct(id: string, body: FormData) {
   try {
-    const token = getAuthHeaders()
+    const token = getAuthToken()
     const response = await apiClient.patch(`/products/${id}`, body, {
       headers: {
         Authorization: "Bearer " + token,
@@ -156,7 +154,7 @@ async function EditProduct(id: string, body: FormData) {
 // DELETE
 async function DeleteProduct(id: string) {
   try {
-    const token = getAuthHeaders()
+    const token = getAuthToken()
     const response = await apiClient.delete(`/products/deleteProduct/${id}`, {
       headers: {
         Authorization: "Bearer " + token,
@@ -171,7 +169,7 @@ async function DeleteProduct(id: string) {
 
 async function DeleteProductImage(id: string, image: string) {
   try {
-    const token = getAuthHeaders()
+    const token = getAuthToken()
     const response = await apiClient.delete(`/products/image/${id}/${image}`, {
       headers: {
         Authorization: "Bearer " + token,
@@ -186,7 +184,7 @@ async function DeleteProductImage(id: string, image: string) {
 
 async function DeleteBulkProducts(products: string[]) {
   try {
-    const token = getAuthHeaders()
+    const token = getAuthToken()
     const response = await apiClient.delete(`/products/deleteBulkProducts`, {
       headers: {
         Authorization: "Bearer " + token,
