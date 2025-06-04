@@ -116,6 +116,7 @@ async function GetProductsByLimitAndCategory(limit: number, category: string) {
 
 async function CreateProduct(body: any) {
   try {
+    console.log(token)
     const response = await apiClient.post("/products/create-product", body, {
       headers: {
         Authorization: "Bearer " + token,
