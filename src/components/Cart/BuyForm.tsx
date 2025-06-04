@@ -47,8 +47,8 @@ export const BuyForm = ({ total }: { total: number }) => {
         message: createCustomerOrderMessage(data),
       };
 
-      await sendMail(mail);
-      await mutate();
+      sendMail(mail);
+      mutate();
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Error inesperado";
@@ -96,7 +96,7 @@ export const BuyForm = ({ total }: { total: number }) => {
               placeholder="+57 123 456 7891"
               form={form}
             />
-            <BoldPaymentButton amount={total} />
+            <BoldPaymentButton />
           </form>
         </Form>
       </DialogContent>
