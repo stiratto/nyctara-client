@@ -114,7 +114,7 @@ async function GetProductsByLimitAndCategory(limit: number, category: string) {
 
 // POSTS
 
-async function CreateProduct(body: any) {
+async function CreateProduct(body: any, token: string) {
   try {
     console.log(token)
     const response = await apiClient.post("/products/create-product", body, {

@@ -35,6 +35,8 @@ import { Badge } from "@/components/ui/badge";
 import { getImagesPreview } from "@/utils/utils";
 import { useFormActions } from "@/hooks/useFormActions";
 import { FormFieldWrapper } from "@/components/Other/FormFieldWrapper";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 const AddProduct = () => {
   const [tempImagesUrls, setTempImagesUrls] = useState<string[]>([]);
@@ -46,6 +48,8 @@ const AddProduct = () => {
       product_images: [],
     },
   });
+
+  const token = useSelector((state: RootState) => state.user.token)
 
   const product_notes = form.getValues("product_notes");
   const product_images = form.getValues("product_images");
@@ -67,7 +71,7 @@ const AddProduct = () => {
   });
 
   const { isPending: isCreatingProduct, mutate: createProduct } = useMutation({
-    mutationFn: (data: any) => productsApi.CreateProduct(data),
+    mutationFn: (data: any) => productsApi.CreateProduct(data, token as string),
     onMutate: () => {
       queryClient.invalidateQueries({ queryKey: ["category-products"] });
       const previousProducts = queryClient.getQueryData<Product[]>([
