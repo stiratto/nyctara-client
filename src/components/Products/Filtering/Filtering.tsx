@@ -1,20 +1,17 @@
-import { FilteringDrawer } from "./FilteringDrawer"
-import { FilteringAccordionItems, FilteringBadgesItems } from "@/utils/consts/filtering"
+import { FilteringAccordionItems } from "@/utils/consts/filtering"
 import { FilteringBadge } from "./FilteringBadge"
 import queryClient from "@/main"
 import { RefreshCw } from "lucide-react"
 import { useParams } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import categoriesApi from "@/api/categories/categories.api"
-import { useDispatch, useSelector } from "react-redux"
-import { AppDispatch, RootState } from "@/store/store"
+import { useDispatch } from "react-redux"
+import { AppDispatch} from "@/store/store"
 import { clearFiltering } from "@/store/filtering/FilteringSlice"
 
 export const Filtering = () => {
    const { id } = useParams()
    const dispatch = useDispatch<AppDispatch>()
-
-   const { filters, params } = useSelector((state: RootState) => state.filtering)
 
 
    const { refetch } = useQuery({

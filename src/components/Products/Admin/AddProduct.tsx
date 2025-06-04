@@ -9,7 +9,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Category } from "@/interfaces/Category.Interface.ts";
 import { Product, ProductQuality } from "@/interfaces/Product.Interface.ts";
 import queryClient from "@/main";
