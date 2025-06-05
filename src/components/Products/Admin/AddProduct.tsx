@@ -47,7 +47,6 @@ const AddProduct = () => {
     },
   });
 
- 
 
   const product_notes = form.getValues("product_notes");
   const product_images = form.getValues("product_images");

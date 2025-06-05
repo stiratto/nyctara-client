@@ -133,7 +133,7 @@ const Product = () => {
             <TypographyP className="break-words max-w-sm text-gray-700">
               {product?.product_description}
             </TypographyP>
-            <Badge className="bg-transparent text-black border-gray-700 w-min hover:bg-transparent">
+            <Badge className="bg-transparent text-black border-gray-700 hover:bg-transparent w-max">
               {product?.product_category?.category_name}
             </Badge>
             <div>
@@ -146,7 +146,7 @@ const Product = () => {
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <div className="flex items-center gap-16  p-4 border border-gray-500 rounded-full text-gray-700">
                 <Plus size={20} className="hover:cursor-pointer" onClick={() => setProductQuantity(productQuantity + 1)} />
-                <p className="text-black">{productQuantity}</p>
+                <p className="text-black w-8">{productQuantity}</p>
                 <button disabled={productQuantity === 1} className="cursor-pointer">
                   <Minus size={20} onClick={() => setProductQuantity(productQuantity - 1)} />
                 </button>
