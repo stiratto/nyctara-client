@@ -156,7 +156,7 @@ const AddProduct = () => {
 
           <FormFieldWrapper
             name="product_description"
-            label="product_description"
+            label="Descripcion del producto"
             placeholder="Descripcion del producto"
             textarea
             form={form}
