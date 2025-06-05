@@ -1,5 +1,4 @@
-import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
-import { toast } from "sonner";
+import axios from "axios";
 
 const apiUrl = import.meta.env.VITE_API_URL || "/api";
 const apiClient = axios.create({
