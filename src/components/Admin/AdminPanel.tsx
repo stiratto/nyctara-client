@@ -4,6 +4,7 @@ import { TypographyH1 } from "../Typography/h1";
 import { TypographyP } from "../Typography/p";
 
 const AdminPanel = () => {
+
   return (
     <main className="flex flex-col gap-4 items-center justify-around py-24 w-full h-screen container">
       <div className="w-full space-y-4">
