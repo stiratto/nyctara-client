@@ -1,5 +1,0 @@
-Lista de cosas para hacer:
-
-- Dialog de formulario de compra: Hecho
-- Enviar el formulario a un correo
-
