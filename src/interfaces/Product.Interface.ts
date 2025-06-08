@@ -1,4 +1,4 @@
-import { CategoryInterface } from "./Category.Interface";
+import { Category } from "./Category.Interface";
 
 export enum ProductQuality {
   ORIGINAL = "ORIGINAL",
@@ -12,11 +12,12 @@ export interface Product {
   product_name: string;
   product_price: number;
   product_quantity?: number;
+  isAvailable: boolean;
   product_tags: string[];
   product_description?: string;
   product_notes: string[];
   product_quality: string;
-  categories?: CategoryInterface[];
+  categories?: Category[];
   product_category: {
     id: string;
     category_name: string;

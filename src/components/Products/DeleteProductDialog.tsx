@@ -9,9 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import queryClient from "@/main";
-import { RootState } from "@/store/store";
 import { useMutation } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
@@ -23,21 +21,30 @@ export const DeleteProductDialog = ({ id }: { id: string }) => {
   const { mutate: deleteProduct } = useMutation({
     mutationFn: () => productsApi.DeleteProduct(id),
     onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ["category-products"] });
+      const previousProducts = queryClient.getQueryData<Product[]>(["category-products"])
+
+      const data = previousProducts?.filter((p) => p.id !== id)
+
+      queryClient.setQueryData(["category-products"], (oldProducts: Product[]) => oldProducts ? [...oldProducts, data] : [data])
+
+      return { previousProducts }
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["category-products"] });
+      queryClient.invalidateQueries({ queryKey: ["productToEdit"] });
       toast.success("Producto eliminado");
       navigate("/");
     },
-    onError: (err, context) => {
+    onError: (err: any, context: any) => {
       toast.error("No se pudo eliminar el producto");
+      queryClient.setQueryData(["category-products"], context.previousProducts)
       throw err;
     },
   });
   return (
     <Dialog>
-      <DialogTrigger>
-        <Button variant={"destructive"}>Eliminar producto</Button>
+      <DialogTrigger className="bg-red-600 text-white rounded text-sm font-semibold p-3 w-max hover:bg-red-800">
+        Eliminar producto
       </DialogTrigger>
       <DialogContent className="bg-[#ecefdc]">
         <DialogHeader>
@@ -51,7 +58,7 @@ export const DeleteProductDialog = ({ id }: { id: string }) => {
         <div className="flex items-center gap-4">
           <Button
             variant={"destructive"}
-            onClick={() => deleteProduct(id)}
+            onClick={() => deleteProduct(id as string)}
           >
             Si
           </Button>

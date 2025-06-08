@@ -15,17 +15,36 @@ const cartProductsSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addProductToCart: (state, action: PayloadAction<{product: Product}>) => {
-      const productExists = state.products.find(
+    updateCartProducts: (state, action: PayloadAction<{ products: Product[] }>) => {
+      try {
+        const updatedQuantities = action.payload.products.map((product) => {
+          const productWithId = state.products.find((p) => p.id === product.id) as Product
+          if (productWithId) {
+            return { ...product, product_quantity: productWithId.product_quantity }
+          }
+          return product
+        })
+        state.products = updatedQuantities
+      } catch (err: any) {
+        console.log(err)
+      }
+    },
+
+    addProductToCart: (state, action: PayloadAction<{ product: Product, discountUserUsing: Discount }>) => {
+      console.log(state.products)
+      const productExists = state?.products?.find(
         (p) => p.id === action.payload.product.id,
       );
+      const product = action.payload.product
+
+      // check if user is using a discount and apply it before adding
+      // hte product to cart
 
       if (productExists) {
-        productExists.quantity += 1 as any;
-      } else {
-        action.payload.product.quantity = 1
-        state.products.push(action.payload.product);
+        productExists.product_quantity += product.product_quantity as any;
+        return
       }
+      state.products.push(product);
     },
     removeProductFromCart: (state, action: PayloadAction<{ id: string }>) => {
       state.products = state.products.filter(
@@ -43,24 +62,20 @@ const cartProductsSlice = createSlice({
         (product) => product.id === action.payload.id,
       );
       if (product) {
-        product.quantity += action.payload.quantity as any;
+        product.product_quantity += action.payload.quantity as any;
       }
     },
+
     changeProductPrice: (
       state,
       action: PayloadAction<{
         discount_total: string;
-        discount_name: string;
-        userIsUsingDiscount: Discount;
       }>,
     ) => {
-      if (action.payload.userIsUsingDiscount) {
-        return;
-      } else {
-        state.products.map((product) => {
-          product.price = product.price - parseInt(action.payload.discount_total);
-        });
-      }
+      state.products.map((product) => {
+        product.product_price -= Math.floor((product.product_price * parseInt(action.payload.discount_total)) / 100);
+
+      });
     },
     removeQuantity: (
       state,
@@ -69,8 +84,8 @@ const cartProductsSlice = createSlice({
       const product = state.products.find(
         (product) => product.id === action.payload.id,
       );
-      if (product) {
-        product.quantity -= action.payload.quantity as any;
+      if (product && product.product_quantity) {
+        product.product_quantity -= action?.payload?.quantity as any;
       }
     },
   },
@@ -83,6 +98,7 @@ export const {
   addQuantity,
   removeQuantity,
   changeProductPrice,
+  updateCartProducts,
   clearCart,
 } = cartProductsSlice.actions;
 

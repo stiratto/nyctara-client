@@ -14,7 +14,7 @@ const Homepage = () => {
 
   return (
     <div className="flex flex-col justify-center items-center ">
-      <div className="h-screen">
+      <div className="">
         <picture> <source srcSet="https://nyctara-perfumery-static.s3.us-east-1.amazonaws.com/nyctara%2Bgrande.webp" media="(min-width: 300px)" /> <img src="https://nyctara-perfumery-static.s3.us-east-1.amazonaws.com/nyctara%2Bgrande.webp" alt="landing image" height="100" width="600" loading="lazy" decoding="async" /> </picture>
 
       </div>
@@ -32,16 +32,8 @@ const Homepage = () => {
               {products.map((product: Product) => (
                 <ProductCard
                   key={uuidv4()}
-                  id={product.id}
-                  quantity={product.quantity}
-                  product_quality={product.product_quality}
-                  images={product.images}
-                  description={product.description}
-                  category={product.category}
-                  name={product.name}
-                  price={product.price}
-                  tags={product.tags}
-                  notes={product.notes}
+                  {...product}
+
                 />
               ))}
             </ul>

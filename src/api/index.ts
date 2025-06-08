@@ -7,11 +7,10 @@ const apiClient = axios.create({
 });
 
 apiClient.interceptors.response.use(
-  function(response) {
-    return response;
+  (response) => {
+    return response
   },
-  function(error) {
-    console.error("La llamada a la API fallo, error:", error);
+  (error) => {
     return Promise.reject(error);
   },
 );

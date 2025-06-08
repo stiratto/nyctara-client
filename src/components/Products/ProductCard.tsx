@@ -1,95 +1,45 @@
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
 import { Product } from "@/interfaces/Product.Interface";
-import { addToCart } from "@/utils/utils";
-import React, { useEffect } from "react";
 import { NavLink as Link } from "react-router-dom";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
 
-import { ShoppingCart } from "lucide-react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import { formatPrice } from "@/utils/utils";
+import { IsAvailableBadge } from "./IsAvailableBadge";
 
 export const ProductCard = ({
   product_name,
   product_price,
   product_category,
-  product_tags,
-  product_description,
-  product_quality,
-  product_notes,
+  isAvailable,
+  //product_tags,
+  //product_description,
+  //product_quality,
+  // product_notes,
   product_images,
   id,
 }: Product) => {
-  const [formattedPrice, setFormattedPrice] = React.useState("");
-
-  useEffect(() => {
-    console.log(product_price)
-    const formattedPrice = product_price.toLocaleString("es-ES", {
-      style: "currency",
-      currency: "COP",
-    });
-    const result = formattedPrice.replace("COP", "").replace(",00", "").trim();
-    setFormattedPrice(result);
-  }, [product_price]);
-
-  const handleAddToCart = (e: any) => {
-    e.preventDefault();
-    try {
-      addToCart(
-        {
-          product_name,
-          product_price,
-          id,
-          product_images,
-          product_tags,
-          product_notes,
-          product_description,
-          product_quality,
-          product_category,
-        },
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
   return (
-    <Link to={`/producto/${id}`} className="flex flex-col !p-0 rounded">
-      <Card className="bg-[#D3DAAE4b]">
-        <CardHeader className="p-0">
-          <LazyLoadImage alt="Imagen del producto" height={300} effect="black-and-white" src={product_images?.[0] } width={300} className="mx-auto" />
-          <CardTitle className="px-6">{product_name}</CardTitle>
-          <CardDescription className="px-6">
-            {product_category?.category_name}
+    <Link to={`/producto/${id}`} className="flex flex-col p-0! rounded">
+
+      <Card className="group relative bg-transparent border-black/20 max-w-xs h-full">
+
+        <IsAvailableBadge isAvailable={isAvailable} className="absolute bg-[#ecefdc] rounded-none rounded-br rounded-tl" />
+        <LazyLoadImage src={product_images?.[0] as string} effect={"black-and-white"} className="h-80 rounded-t" />
+
+        <CardContent className="flex flex-col gap-2 text-center justify-center items-center w-full">
+
+          <p className="font-bold">{product_category?.category_name}</p>
+          <CardDescription className="text-black space-y-2 text-[#e5dc4e]">
+            <CardTitle className="group-hover:underline">{product_name}</CardTitle>
+            <div className="space-x-4">
+
+            </div>
+            <p className="font-bold text-black">${formatPrice(product_price)}</p>
+            <button className="opacity-0 group-hover:opacity-100 hover:bg-white/30 transition-all text-white bg-black/50 rounded-lg p-2 left-28 absolute top-[17rem] mx-auto font-semibold cursor-pointer">Ver producto</button>
           </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-x-2">
-            {product_notes
-              && product_notes.map((note: string, index: number) => (
-                <Badge key={index} className="bg-gray-200 text-black hover:!bg-gray-200">
-                  {note}
-                </Badge>
-              ))}
-          </div>
-          <div className="space-x-2">
-            {product_tags
-              && product_tags.map((tag: string, index: number) => (
-                <Badge key={index} className="bg-gray-200 text-black hover:!bg-gray-200">
-                  {tag}
-                </Badge>
-              ))}
-          </div>
+
         </CardContent>
-        <CardFooter className="justify-between space-y-2 flex-wrap">
-          <p className="font-extrabold">${formattedPrice}</p>
-          <Button
-            className="flex items-center gap-2 !bg-"
-            onClick={handleAddToCart}
-          >
-            <ShoppingCart />
-            Anadir al carrito
-          </Button>
-        </CardFooter>
+
       </Card>
     </Link>
   );

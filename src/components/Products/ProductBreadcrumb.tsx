@@ -13,25 +13,29 @@ const ProductBreadcrumb = ({ category, name, id }: any) => {
     <Breadcrumb>
       <BreadcrumbList className="flex flex-row items-center">
         <BreadcrumbItem>
-          <BreadcrumbLink>
+          <BreadcrumbLink asChild>
             <Link to={`/`}>Inicio</Link>
           </BreadcrumbLink>
-          <BreadcrumbSeparator />
         </BreadcrumbItem>
 
+        <BreadcrumbSeparator />
         <BreadcrumbItem>
           <BreadcrumbLink>Marcas</BreadcrumbLink>
-          <BreadcrumbSeparator />
         </BreadcrumbItem>
         {category !== "PP" && (
-          <BreadcrumbItem>
-            <BreadcrumbLink>
-              <Link to={`/categoria/${id}`}>{category}</Link>
-            </BreadcrumbLink>
+          <div className="flex items-center gap-2">
             <BreadcrumbSeparator />
-          </BreadcrumbItem>
+
+            <BreadcrumbItem >
+              <BreadcrumbLink asChild>
+                <Link to={`/categoria/${id}`} className="underline">{category}</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+
+          </div>
         )}
 
+        <BreadcrumbSeparator />
         <BreadcrumbItem>
           <BreadcrumbPage>{name}</BreadcrumbPage>
         </BreadcrumbItem>

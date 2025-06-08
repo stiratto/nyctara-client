@@ -1,9 +1,9 @@
-import { DatePickerForm } from "./DatePicker";
+import { AddDiscountForm } from "./AddDiscountForm";
 
 export const AddDiscount = () => {
   return (
     <section className="flex flex-col md:flex-row  items-center w-full">
-      <DatePickerForm />
+      <AddDiscountForm />
     </section>
   );
 };

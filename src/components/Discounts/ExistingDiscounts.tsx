@@ -14,7 +14,7 @@ export const ExistingDiscounts = () => {
     isError: gettingDiscountsError,
   } = useQuery<Discount[]>({
     queryKey: ["discounts"],
-    queryFn: () => discountsApi.GetAllDiscounts(),
+    queryFn: () => discountsApi.GetDiscounts(),
   });
 
   const { mutate: deleteDiscount } = useMutation({
@@ -62,7 +62,7 @@ export const ExistingDiscounts = () => {
             && discounts?.map((discount) => (
               <TableRow
                 key={discount.id}
-                className="!bg-transparent !text-black"
+                className="bg-transparent! text-black!"
               >
                 <TableCell>{discount.discount_name}</TableCell>
                 <TableCell>{discount.discount_total}</TableCell>

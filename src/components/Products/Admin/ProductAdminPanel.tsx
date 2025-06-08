@@ -1,5 +1,5 @@
 import AddProduct from "./AddProduct"
-import { DeleteBulkProducts } from "./DeleteBulkProducts"
+import DeleteBulkProducts from "./DeleteBulkProducts"
 
 const ProductAdminPanel = () => {
   return (

@@ -5,15 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Product } from "@/interfaces/Product.Interface"
 import queryClient from "@/main";
-import { RootState } from "@/store/store";
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { ExternalLink, LoaderCircle, Search, Trash2 } from "lucide-react";
 import { ChangeEvent, useRef, useState } from "react";
-import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { toast } from "sonner"
 
-export const DeleteBulkProducts = () => {
+const DeleteBulkProducts = () => {
   const [results, setResults] = useState<Product[]>()
   const [productsToDelete, setProductsToDelete] = useState<Set<string>>(new Set())
   const containerRef = useRef(null);
@@ -24,9 +22,10 @@ export const DeleteBulkProducts = () => {
       const response = await productsApi.GetAllProducts()
       setResults(response)
       return response
-    }
-  })
+    },
 
+
+  })
   const search = (e: ChangeEvent<HTMLInputElement>) => {
     const searchResults: any = products?.filter((p) => p.product_name.includes(e.target.value))
     setResults(searchResults)
@@ -44,11 +43,9 @@ export const DeleteBulkProducts = () => {
     })
   }
 
-  const token = useSelector((state: RootState) => state.user.token) as string
-
   const { mutate } = useMutation({
     mutationKey: ['deleteBulkProducts'],
-    mutationFn: (productsToDeleteArray: string[]) => productsApi.DeleteBulkProducts(productsToDeleteArray, token),
+    mutationFn: (productsToDeleteArray: string[]) => productsApi.DeleteBulkProducts(productsToDeleteArray),
     onMutate: async () => {
       try {
         // Cancel the queries on the category-products
@@ -82,7 +79,7 @@ export const DeleteBulkProducts = () => {
     },
     onSuccess: () => {
       toast.success("Los productos fueron eliminados");
-      queryClient.invalidateQueries({ queryKey: ['all-products'] });
+      queryClient.refetchQueries({ queryKey: ['all-products'] });
       queryClient.invalidateQueries({ queryKey: ['category-products'] });
       setProductsToDelete([] as unknown as Set<any>)
     },
@@ -94,18 +91,17 @@ export const DeleteBulkProducts = () => {
     }
 
   })
-
   const onSubmit = () => {
     const productsToDeleteArray = Array.from(productsToDelete as Set<string>)
     mutate(productsToDeleteArray)
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full max-w-xl mx-auto">
 
       <TypographyH1>Eliminar productos</TypographyH1>
-      <div className="bg-[#ecefdc] relative">
-        <Input onChange={search} placeholder="Busca por el nombre del producto" className="searchInput pl-8 !border-gray-500 w-min" />
+      <div className=" relative">
+        <Input onChange={search} placeholder="Busca por el nombre del producto" className=" pl-8 w-min" />
         <Search size={17} className="absolute top-[10px] left-2" />
       </div>
 
@@ -113,37 +109,45 @@ export const DeleteBulkProducts = () => {
       {isLoading && !isError && <LoaderCircle size={30} className="animate-spin mx-auto" />}
       {!isLoading && isError && <p className="text-red-500">Hubo un error.</p>}
       {!isLoading && !isError && (
-        <Table className="block !h-[24rem] overflow-y-scroll border border-gray-500 rounded-sm " >
-          <TableHeader className="sticky top-0 shadow-[0_5px_30px_-15px_rgba(0,0,0,0.3)] bg-[#ecefdc] w-full">
-            <TableHead>Nombre</TableHead>
-            <TableHead>Precio</TableHead>
-            <TableHead>Categoria</TableHead>
-
-
-          </TableHeader>
-          <TableBody className="" ref={containerRef}>
-            {results?.map((p) => (<TableRow className="" key={p.id}>
-              <TableCell className="flex items-center gap-2">
-                <Input
-                  type="checkbox"
-                  className="w-min productCheckbox"
-                  onChange={() => onCheckBox(p.id as string)}
-                />
-                <NavLink
-                  target="_blank"
-                  to={`/producto/${p.id}`}
-                  className="underline text-blue-500 flex items-center gap-1"
-                >
-                  {p.product_name}
-                  <ExternalLink size={20} />
-                </NavLink>
-              </TableCell>
-              <TableCell>{p.product_price}</TableCell>
-              <TableCell>{p?.product_category?.category_name}</TableCell>
+        <Table className="block h-[24rem] overflow-y-scroll border border-gray-500 rounded-sm w-full max-w-xl" >
+          <TableHeader className="sticky top-0 shadow-sm bg-[#ecefdc] w-full">
+            <TableRow>
+              <TableHead className="w-[200px]">Nombre</TableHead>
+              <TableHead>Precio</TableHead>
+              <TableHead>Categoria</TableHead>
             </TableRow>
+          </TableHeader>
 
 
-            ))}
+          <TableBody className="" ref={containerRef}>
+            {results && results.length > 0 ? results?.map((p) => (
+              <TableRow className="w-full" key={p.id}>
+
+                <TableCell className="flex items-center gap-2 w-[200px]">
+                  <Input
+                    type="checkbox"
+                    className="w-min productCheckbox"
+                    onChange={() => onCheckBox(p.id as string)}
+                  />
+                  <NavLink
+                    target="_blank"
+                    to={`/producto/${p.id}`}
+                    className="underline text-blue-500 flex items-center gap-1"
+                  >
+                    {p.product_name}
+                    <ExternalLink size={20} />
+                  </NavLink>
+                </TableCell>
+                <TableCell className="w-min">{p.product_price}</TableCell>
+                <TableCell>{p?.product_category?.category_name}</TableCell>
+              </TableRow>
+
+
+            )) : <TableRow>
+              <TableCell className="w-full">
+                <h1 className="text-gray-600 py-2">No se pudieron encontrar productos por ese nombre</h1>
+              </TableCell>
+            </TableRow>}
           </TableBody>
         </Table>
 
@@ -151,7 +155,7 @@ export const DeleteBulkProducts = () => {
       <Button
         variant="destructive"
         onClick={onSubmit}
-        className="space-x-4 rounded-none w-full"
+        className="space-x-8 w-full"
         disabled={Array.from(productsToDelete as Set<string>).length < 1}>
         <Trash2 size={20} />
         Eliminar seleccionados
@@ -164,3 +168,5 @@ export const DeleteBulkProducts = () => {
     </div>
   )
 }
+
+export default DeleteBulkProducts

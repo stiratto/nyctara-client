@@ -2,7 +2,6 @@ import productsApi from "@/api/products/products.api";
 import { Product } from "@/interfaces/Product.Interface.ts";
 import { useQuery } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
-import queryClient from "../../main.tsx";
 import ProductsNotFound from "../NotFound/ProductsNotFound.tsx";
 import { TypographyH1 } from "../Typography/h1.tsx";
 import { ProductCard } from "./ProductCard.tsx";
@@ -15,12 +14,12 @@ const OtherProducts = (id: { id: string }) => {
     isError,
     data: otherProducts,
   } = useQuery<Product[]>({
-    queryKey: ["other-products"],
+    queryKey: ["other-products", id],
     queryFn: () => productsApi.GetProductsByLimit(3, productId),
   });
 
   return (
-    <div className="py-24 gap-8 flex flex-col justify-center items-center">
+    <div className="py-24 gap-8 flex flex-col justify-center items-center w-full">
       <TypographyH1>Otros productos</TypographyH1>
       {isLoading && <LoaderCircle />}
 

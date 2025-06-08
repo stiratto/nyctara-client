@@ -1,7 +1,7 @@
 import { store } from "@/store/store.ts";
 import apiClient from "../index.ts";
-
-
+import { getAxiosErrorResponse } from "@/utils/utils.ts";
+import { Category } from "@/interfaces/Category.Interface.ts";
 
 const token = store.getState().user.token;
 
@@ -12,7 +12,8 @@ async function GetCategoryProducts(categoryId: string) {
     );
     return response.data;
   } catch (error: any) {
-    throw new Error(`Error al obtener los productos de la categoria: ${error}`);
+    const errorMessage = getAxiosErrorResponse(error)
+    throw new Error(errorMessage);
   }
 }
 
@@ -22,8 +23,9 @@ async function GetCategoryById(categoryId: string) {
       `/categories/find-category/${categoryId}`,
     );
     return response.data;
-  } catch (error) {
-    throw new Error(`Error al obtener la categoria: ${error}`);
+  } catch (error: any) {
+    const errorMessage = getAxiosErrorResponse(error)
+    throw new Error(errorMessage);
   }
 }
 
@@ -32,37 +34,47 @@ async function GetAllCategories() {
     const response = await apiClient.get(`/categories/`);
     return response.data;
   } catch (error) {
-    throw new Error(`Error al obtener las categorias: ${error}`);
+    const errorMessage = getAxiosErrorResponse(error)
+    throw new Error(errorMessage);
+
   }
 }
 
 async function CreateCategory(body: any) {
   try {
     const token = store.getState().user.token as any;
-    console.log(token);
 
     const response = await apiClient.post("/categories/create-category", body, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
         "Authorization": "Bearer " + token,
       },
     });
+
     return response.data;
   } catch (error) {
-    throw new Error(`Error al crear la categoria: ${error}`);
+    const errorMessage = getAxiosErrorResponse(error)
+    throw new Error(errorMessage);
   }
 }
 
-async function UpdateCategory(body: any, id: string) {
+
+async function UpdateCategory(data: Category) {
   try {
     const response = await apiClient.patch(
-      `/categories/update-category/${id}`,
-      body,
-      { headers: { "Authorization": "Bearer " + token } },
+      `/categories/update-category/${data.id}`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        }
+      },
     );
     return response.data;
   } catch (error) {
-    throw new Error(`Error al crear la categoria: ${error}`);
+    const errorMessage = getAxiosErrorResponse(error)
+    throw new Error(errorMessage);
   }
 }
 

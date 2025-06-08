@@ -1,5 +1,6 @@
-export interface CategoryInterface {
-  id: string;
-  category_name: string;
-  image?: string | File;
+export interface Category {
+    id?: string;
+    category_name: string;
+    createdAt?: string;
+    updatedAt?: string;
 }
