@@ -11,7 +11,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Category } from "@/interfaces/Category.Interface.ts";
 import { Product, ProductQuality } from "@/interfaces/Product.Interface.ts";
-import queryClient from "@/main";
 import {
   TAddProductSchema,
   AddProductSchema,
@@ -25,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CloudUpload, X } from "lucide-react";
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -37,6 +36,8 @@ import { useFormActions } from "@/hooks/useFormActions";
 import { FormFieldWrapper } from "@/components/Other/FormFieldWrapper";
 
 const AddProduct = () => {
+  const queryClient = useQueryClient()
+
   const [tempImagesUrls, setTempImagesUrls] = useState<string[]>([]);
   const form = useForm<TAddProductSchema>({
     resolver: zodResolver(AddProductSchema),

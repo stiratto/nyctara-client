@@ -1,15 +1,15 @@
 import { FilteringAccordionItems } from "@/utils/consts/filtering"
 import { FilteringBadge } from "./FilteringBadge"
-import queryClient from "@/main"
 import { RefreshCw } from "lucide-react"
 import { useParams } from "react-router-dom"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import categoriesApi from "@/api/categories/categories.api"
 import { useDispatch } from "react-redux"
 import { AppDispatch} from "@/store/store"
 import { clearFiltering } from "@/store/filtering/FilteringSlice"
 
 export const Filtering = () => {
+   const queryClient = useQueryClient()
    const { id } = useParams()
    const dispatch = useDispatch<AppDispatch>()
 

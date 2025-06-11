@@ -1,15 +1,15 @@
 import productsApi from "@/api/products/products.api";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import queryClient from "@/main";
 import { addNewFiltering } from "@/store/filtering/FilteringSlice";
 import { AppDispatch, RootState } from "@/store/store";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {  useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 export const FilterByAvailability = () => {
+   const queryClient = useQueryClient()
    const [selectedItem, setSelectedItem] = useState<string>("")
    const { id } = useParams()
    const { params, filters } = useSelector((state: RootState) => state.filtering)

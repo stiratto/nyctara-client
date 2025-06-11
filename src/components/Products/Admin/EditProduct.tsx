@@ -22,7 +22,7 @@ import {
   TEditProductSchema,
 } from "@/schemas/EditProductShema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CloudUpload, LoaderCircle, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -34,10 +34,11 @@ import { Badge } from "@/components/ui/badge";
 import { getImagesPreview } from "@/utils/utils";
 import { Category } from "@/interfaces/Category.Interface";
 import { useFormActions } from "@/hooks/useFormActions";
-import queryClient from "@/main";
 import { FormFieldWrapper } from "@/components/Other/FormFieldWrapper";
 
 const EditProduct = () => {
+  const queryClient = useQueryClient()
+
   const id = useParams().id as string;
 
   const navigate = useNavigate();
