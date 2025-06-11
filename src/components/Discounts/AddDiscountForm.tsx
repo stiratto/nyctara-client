@@ -25,13 +25,14 @@ import {
 import { TAddDiscountSchema, AddDiscountSchema } from "@/schemas/AddDiscountSchema"
 import { Input } from "../ui/input"
 import discountsApi from "@/api/discounts/discounts.api"
-import queryClient from "@/main"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Discount } from "@/interfaces/Discount.interface"
 
 export function AddDiscountForm() {
+  const queryClient = useQueryClient()
+
   const form = useForm<TAddDiscountSchema>({
     resolver: zodResolver(AddDiscountSchema),
   })

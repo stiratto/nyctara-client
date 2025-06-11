@@ -1,9 +1,8 @@
 import categoriesApi from "@/api/categories/categories.api";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import queryClient from "@/main";
 import { AddCategorySchema, TAddCategorySchema } from "@/schemas/AddCategorySchema";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { TypographyH2 } from "../Typography/h2";
@@ -13,6 +12,7 @@ import { Loader2 } from "lucide-react";
 import { Category } from "@/interfaces/Category.Interface";
 
 const AddCategory = () => {
+  const queryClient = useQueryClient()
   const form = useForm<TAddCategorySchema>({
     resolver: zodResolver(AddCategorySchema),
     reValidateMode: "onChange",

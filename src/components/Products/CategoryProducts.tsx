@@ -9,7 +9,6 @@ import { LoaderCircle } from "lucide-react";
 import { Filtering } from "./Filtering/Filtering";
 import { cn } from "@/utils/utils";
 import { LazyLoadComponent } from "react-lazy-load-image-component";
-import axios from "axios";
 
 const CategoryProducts = () => {
   const { id: categoryId } = useParams();
@@ -20,18 +19,11 @@ const CategoryProducts = () => {
         queryKey: ["category-products", categoryId],
         queryFn: () => api.GetCategoryProducts(categoryId as string),
         enabled: !!categoryId,
-        retry: (failureCount, error: unknown) => {
-          // Don't retry on 404s as they are likely permanent
-          if (axios.isAxiosError(error) && error.response?.status === 404) return false;
-          // For other errors, retry up to 2 times
-          return failureCount < 2;
-        },
       },
       {
         queryKey: ["category", categoryId],
         queryFn: () => api.GetCategoryById(categoryId as string),
         enabled: !!categoryId,
-        retry: (failureCount) => failureCount < 2,
       }
     ]
   });

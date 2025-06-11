@@ -11,9 +11,14 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react(), compression({
       algorithm: 'brotliCompress',
-      ext: '.br', // Extensión del archivo comprimido
-      deleteOriginFile: false, // No borres los archivos originales
+      ext: '.br', 
+      deleteOriginFile: false, 
     })],
+    test: {
+      globals: true,
+      environment: "jsdom",
+      // setupFiles: './src/setupTests.ts'
+    },
     server: {
       proxy: {
         "/api/": {

@@ -4,15 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Product } from "@/interfaces/Product.Interface"
-import queryClient from "@/main";
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { ExternalLink, LoaderCircle, Search, Trash2 } from "lucide-react";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { toast } from "sonner"
 
 const DeleteBulkProducts = () => {
   const [results, setResults] = useState<Product[]>()
+  const queryClient = useQueryClient()
   const [productsToDelete, setProductsToDelete] = useState<Set<string>>(new Set())
   const containerRef = useRef(null);
 
@@ -20,11 +20,10 @@ const DeleteBulkProducts = () => {
     queryKey: ["all-products"],
     queryFn: async () => {
       const response = await productsApi.GetAllProducts()
+      console.log(response)
       setResults(response)
       return response
     },
-
-
   })
   const search = (e: ChangeEvent<HTMLInputElement>) => {
     const searchResults: any = products?.filter((p) => p.product_name.includes(e.target.value))
@@ -95,6 +94,10 @@ const DeleteBulkProducts = () => {
     const productsToDeleteArray = Array.from(productsToDelete as Set<string>)
     mutate(productsToDeleteArray)
   }
+
+  useEffect(() => {
+    setResults(products)
+  }, [])
 
   return (
     <div className="space-y-4 w-full max-w-xl mx-auto">

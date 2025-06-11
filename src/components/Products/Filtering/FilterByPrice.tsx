@@ -1,16 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import productsApi from "@/api/products/products.api";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import queryClient from "@/main";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { addNewFiltering } from "@/store/filtering/FilteringSlice";
 
 export const FilterByPrice = () => {
+  const queryClient = useQueryClient()
   const { id } = useParams();
   const [minMax, setMinMax] = useState({
     min: "",

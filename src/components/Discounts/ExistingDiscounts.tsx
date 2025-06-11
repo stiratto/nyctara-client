@@ -1,13 +1,14 @@
 import discountsApi from "@/api/discounts/discounts.api";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Discount } from "@/interfaces/Discount.interface";
-import queryClient from "@/main";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { LoaderCircle, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 
 export const ExistingDiscounts = () => {
+  const queryClient = useQueryClient()
+
   const {
     data: discounts,
     isLoading: gettingDiscounts,
