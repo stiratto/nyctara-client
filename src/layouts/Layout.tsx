@@ -19,7 +19,7 @@ const Layout = () => {
       <Toaster theme="dark" position="top-center" toastOptions={{
         style: { background: '#ecefdc', border: 'none', color: 'black' }
       }} />
-      <TestPage/>
+      <TestPage />
 
       <ErrorBoundary FallbackComponent={ErrorFallback}>
         <Suspense fallback={<LoadingScreen />}>

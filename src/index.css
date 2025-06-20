@@ -241,6 +241,15 @@ input[type="number"] {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground w-full;
   }
+}
+
+
+.warning-floating {
+  transform: translateX(0);
+}
+
+.warning-floating-active {
+  transform: translateX(-1000px);
 }
