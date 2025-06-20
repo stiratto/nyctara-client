@@ -71,7 +71,7 @@ const Product = () => {
   };
 
   return (
-    <div className={cn("duration-600 flex  flex-col items-center justify-center pt-28 px-8 lg:px-24", productError && "h-screen")}>
+    <div className={cn("duration-600 flex  flex-col items-center justify-center pt-28 px-8 lg:px-24 min-h-screen")}>
       {productLoading && !productError && (
         <div className="flex flex-col items-center justify-center py-14  xl:h-screen xl:container px-24">
           <LoaderCircle size={70} className="animate-spin duration-600" />
@@ -146,7 +146,7 @@ const Product = () => {
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <div className="flex items-center gap-16  p-4 border border-gray-500 rounded-full text-gray-700">
                 <Plus size={20} className="hover:cursor-pointer" onClick={() => setProductQuantity(productQuantity + 1)} />
-                <p className="text-black w-8">{productQuantity}</p>
+                <p className="text-black min-w-[3ch]">{productQuantity}</p>
                 <button disabled={productQuantity === 1} className="cursor-pointer">
                   <Minus size={20} onClick={() => setProductQuantity(productQuantity - 1)} />
                 </button>

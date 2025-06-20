@@ -18,22 +18,20 @@ const Cart = () => {
   const cartProducts = useSelector((state: RootState) => state.cart.products);
   const dispatch = useDispatch<AppDispatch>();
 
-  // Derive IDs directly from cartProducts, ensuring non-null values
-  const productIds = useMemo(() => 
+  const productIds = useMemo(() =>
     cartProducts?.reduce<string[]>((acc, product) => {
       if (product.id) acc.push(product.id);
       return acc;
-    }, []) || [], 
+    }, []) || [],
     [cartProducts]
   );
 
-  // Calculate total using useMemo to prevent unnecessary recalculations
   const total = useMemo(() => getCartTotal(), [cartProducts]);
 
-  const { 
-    refetch, 
+  const {
+    refetch,
     isLoading,
-    isError 
+    isError
   } = useQuery({
     queryKey: ["cartProducts", productIds] as const,
     queryFn: async () => {
@@ -68,12 +66,14 @@ const Cart = () => {
       </SheetTrigger>
       <SheetContent
         side={"right"}
-        className="lg:rounded-tl-2xl bg-[#ecefdc] flex flex-col justify-center w-full lg:max-w-2xl mx-auto"
+        className="lg:rounded-tl-2xl bg-[#ecefdc] flex flex-col justify-between w-full lg:max-w-2xl mx-auto"
       >
-        <SheetTitle className="text-5xl self-start">Tu carrito</SheetTitle>
-        <SheetDescription></SheetDescription>
-        <ApplyDiscount />
-        
+        <div className="space-y-8">
+          <SheetTitle className="text-5xl self-start">Tu carrito</SheetTitle>
+          <SheetDescription></SheetDescription>
+          <ApplyDiscount />
+        </div>
+
         {isLoading ? (
           <div className="flex items-center justify-center h-40">
             <Loader2 className="animate-spin" size={40} />
